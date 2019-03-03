@@ -5,7 +5,7 @@ const Scheduler = require('mongo-scheduler-more');
 const scheduler = new Scheduler('mongodb://localhost:27017/instagram-schedule');
 const app = express();
 
-const PORT = 4480 || process.env.PORT;
+const PORT = 3000 || process.env.PORT;
 
 const postImage = data => {
   const { 
