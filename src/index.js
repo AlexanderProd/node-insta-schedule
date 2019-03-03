@@ -28,24 +28,24 @@ const postImage = data => {
         .then(function (upload) {
           // upload instanceof Client.Upload
           // nothing more than just keeping upload id
-          console.log(upload.params.uploadId);
+          // console.log(upload.params.uploadId);
           return Client.Media.configurePhoto(session, upload.params.uploadId, caption);
         })
         .then(function (medium) {
           // we configure medium, it is now visible with caption
-          console.log(medium.params)
+          console.log(`Posted to account ${medium.params.user.username} with link ${medium.params.webLink}!`);
         })]
     });
 }
 
 app.post('/', function (req, res) {
-  // postImage(req.query);
   const event = {
     name: 'instagram-post',
     after: new Date(Date.now() + 120000),
     data: req.query,
   };
   scheduler.schedule(event);
+  console.log(`Scheduled to account ${req.query.account}.`);
   res.sendStatus(200);
 });
 
@@ -74,5 +74,5 @@ app.listen(3000, function () {
 });
 
 scheduler.on('instagram-post', (meal, event) => {
-  console.log(event.data);
+  postImage(event.data);
 });
