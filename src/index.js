@@ -2,7 +2,7 @@ const Client = require('instagram-private-api').V1;
 const express = require('express');
 const Scheduler = require('mongo-scheduler-more');
 
-const scheduler = new Scheduler('mongodb://3.121.177.95:27017/scheduler-test');
+const scheduler = new Scheduler('mongodb://localhost:27017/scheduler-test');
 const app = express();
 
 const postImage = data => {
