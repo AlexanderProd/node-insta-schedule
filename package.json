@@ -14,6 +14,6 @@
     "cors": "^2.8.5",
     "express": "^4.16.4",
     "instagram-private-api": "^0.6.8",
-    "mongo-scheduler-more": "^1.1.4"
+    "mongo-scheduler-more": "^1.1.5"
   }
 }

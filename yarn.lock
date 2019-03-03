@@ -606,10 +606,10 @@ moment-timezone@^0.5.23:
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.24.0.tgz#0d055d53f5052aa653c9f6eb68bb5d12bf5c2b5b"
   integrity sha512-bV7f+6l2QigeBBZSM/6yTNq4P2fNpSWj/0e7jQcy87A8e7o2nAfP/34/2ky5Vw4B9S446EtIhodAzkFCcR4dQg==
 
-mongo-scheduler-more@^1.1.4:
-  version "1.1.4"
-  resolved "https://registry.yarnpkg.com/mongo-scheduler-more/-/mongo-scheduler-more-1.1.4.tgz#beb2dcdae68f973cb8073daf827c70a41d7a8a43"
-  integrity sha512-ObMfm5eAIzXyuwGKGUHaKIxtcFHbtDmBLLAhrVK8QZPJIBtavWT7XeFI0SC7Qdfszn5cHISpxqH/BCgmlJW4Mw==
+mongo-scheduler-more@^1.1.5:
+  version "1.1.5"
+  resolved "https://registry.yarnpkg.com/mongo-scheduler-more/-/mongo-scheduler-more-1.1.5.tgz#03ef0476a6e3a4875f198b72f55dd48f51151f1f"
+  integrity sha512-rpm3dgxOGRqWqjxGElWmGZdXZf0BC02yanvmbwGUlfI53sieB3FvmEIo5Gs2eaZbqaFXiNK3M0mWwx+YgLzexQ==
   dependencies:
     cron-parser "^2.5.0"
     lodash "^4.17.10"
