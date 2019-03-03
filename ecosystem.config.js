@@ -1,7 +1,7 @@
 /* eslint-disable */
 module.exports = {
   apps : [{
-    name: 'instagram-schedule',
+    name: 'Instagram Schedule',
     script: 'src/index.js',
 
     // Options reference: https://pm2.io/doc/en/runtime/reference/ecosystem-file/
