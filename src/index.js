@@ -1,7 +1,9 @@
 const Client = require('instagram-private-api').V1;
 const schedule = require('node-schedule');
 const express = require('express');
+const Scheduler = require('mongo-scheduler-more');
 
+const scheduler = new Scheduler('mongodb://3.121.177.95:27017/scheduler-test');
 const app = express();
 
 const postImage = data => {
@@ -41,11 +43,42 @@ const postImage = data => {
 }
 
 app.post('/', function (req, res) {
-  console.log(req.query);
+  // postImage(req.query);
+  const event = {
+    name: 'instagram-post',
+    after: new Date(Date.now() + 120000),
+    data: req.query,
+  };
+  scheduler.schedule(event);
   res.sendStatus(200);
-  postImage(req.query);
+});
+
+app.post('/list', (req, res) => {
+  scheduler.list((err, events) => {
+    if (err) {
+      console.error(err);
+      res.sendStatus(500)
+    }
+    console.log(events);
+    res.send(events).status(200);
+  });
+});
+
+app.post('/remove', (req, res) => {
+  scheduler.remove('instagram-post', null, null, (err, event) => {
+    if (err) {
+      console.error(err);
+      res.sendStatus(500)
+    }
+    console.log(event);
+    res.sendStatus(200);
+  });
 });
 
 app.listen(3000, function () {
   console.log('App listening on port 3000!');
+});
+
+scheduler.on('instagram-post', (meal, event) => {
+  console.log(event.data);
 });
