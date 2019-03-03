@@ -5,6 +5,8 @@ const Scheduler = require('mongo-scheduler-more');
 const scheduler = new Scheduler('mongodb://localhost:27017/instagram-schedule');
 const app = express();
 
+const PORT = 4480 || process.env.PORT;
+
 const postImage = data => {
   const { 
     account,
@@ -64,8 +66,8 @@ app.post('/remove', (req, res) => {
   });
 });
 
-app.listen(3000, function () {
-  console.log('App listening on port 3000!');
+app.listen(PORT, function () {
+  console.log(`App listening on port ${PORT}!`);
 });
 
 scheduler.on('instagram-post', (meal, event) => {
