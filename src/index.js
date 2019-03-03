@@ -1,11 +1,14 @@
 const Client = require('instagram-private-api').V1;
 const express = require('express');
 const Scheduler = require('mongo-scheduler-more');
+const cors = require('cors');
 
 const scheduler = new Scheduler('mongodb://localhost:27017/instagram-schedule');
 const app = express();
 
 const PORT = 3000 || process.env.PORT;
+
+app.use(cors());
 
 const postImage = data => {
   const { 
