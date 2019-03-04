@@ -5,10 +5,14 @@ const cors = require('cors');
 
 const scheduler = new Scheduler('mongodb://localhost:27017/instagram-schedule');
 const app = express();
+const corsOptions = {
+  origin: '*',
+  optionsSuccessStatus: 200
+};
 
 const PORT = 3000 || process.env.PORT;
 
-app.use(cors());
+app.use(cors(corsOptions));
 
 const postImage = data => {
   const { 
