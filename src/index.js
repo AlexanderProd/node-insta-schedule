@@ -42,7 +42,7 @@ const postImage = data => {
     });
 }
 
-app.post('/', function (req, res) {
+app.post('/', (req, res) => {
   const event = {
     name: 'instagram-post',
     after: new Date(Date.now() + 120000),
@@ -73,7 +73,7 @@ app.post('/remove', (req, res) => {
   });
 });
 
-app.listen(PORT, function () {
+app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}!`);
 });
 

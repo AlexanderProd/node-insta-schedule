@@ -177,7 +177,7 @@ cors@^2.8.5:
     object-assign "^4"
     vary "^1"
 
-cron-parser@^2.5.0:
+cron-parser@^2.7.3:
   version "2.7.3"
   resolved "https://registry.yarnpkg.com/cron-parser/-/cron-parser-2.7.3.tgz#12603f89f5375af353a9357be2543d3172eac651"
   integrity sha512-t9Kc7HWBWPndBzvbdQ1YG9rpPRB37Tb/tTviziUOh1qs3TARGh3b1p+tnkOHNe1K5iI3oheBPgLqwotMM7+lpg==
@@ -542,7 +542,7 @@ lodash.repeat@^4.1.0:
   resolved "https://registry.yarnpkg.com/lodash.repeat/-/lodash.repeat-4.1.0.tgz#fc7de8131d8c8ac07e4b49f74ffe829d1f2bec44"
   integrity sha1-/H3oEx2MisB+S0n3T/6CnR8r7EQ=
 
-lodash@4.x, lodash@^4.17.10, lodash@^4.17.4:
+lodash@4.x, lodash@^4.17.11, lodash@^4.17.4:
   version "4.17.11"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.11.tgz#b39ea6229ef607ecd89e2c8df12536891cac9b8d"
   integrity sha512-cQKh8igo5QUhZ7lg38DYWAxMvjSAKG0A8wGSVimP07SIUEK2UO+arSRKbRZWtelMtN5V0Hkwh5ryOto/SshYIg==
@@ -601,21 +601,20 @@ moment-timezone@^0.5.23:
   dependencies:
     moment ">= 2.9.0"
 
-"moment@>= 2.9.0", moment@^2.22.2:
+"moment@>= 2.9.0", moment@^2.24.0:
   version "2.24.0"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.24.0.tgz#0d055d53f5052aa653c9f6eb68bb5d12bf5c2b5b"
   integrity sha512-bV7f+6l2QigeBBZSM/6yTNq4P2fNpSWj/0e7jQcy87A8e7o2nAfP/34/2ky5Vw4B9S446EtIhodAzkFCcR4dQg==
 
-mongo-scheduler-more@^1.1.5:
-  version "1.1.5"
-  resolved "https://registry.yarnpkg.com/mongo-scheduler-more/-/mongo-scheduler-more-1.1.5.tgz#03ef0476a6e3a4875f198b72f55dd48f51151f1f"
-  integrity sha512-rpm3dgxOGRqWqjxGElWmGZdXZf0BC02yanvmbwGUlfI53sieB3FvmEIo5Gs2eaZbqaFXiNK3M0mWwx+YgLzexQ==
+mongo-scheduler-more@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/mongo-scheduler-more/-/mongo-scheduler-more-1.2.1.tgz#202544578bdc6076a6bb76449327056aeda626ef"
+  integrity sha512-iXUBJm9wYn4AUzviupeAeaeYl5VvBjJsDazJC3t2CoU5/kJG//rYyLDS15oxtMwBPew2ibQ95+dIp6IqvpNXmQ==
   dependencies:
-    cron-parser "^2.5.0"
-    lodash "^4.17.10"
-    moment "^2.22.2"
-    mongodb "^3.1.1"
-    underscore "^1.9.1"
+    cron-parser "^2.7.3"
+    lodash "^4.17.11"
+    moment "^2.24.0"
+    mongodb "^3.1.13"
 
 mongodb-core@3.1.11:
   version "3.1.11"
@@ -628,7 +627,7 @@ mongodb-core@3.1.11:
   optionalDependencies:
     saslprep "^1.0.0"
 
-mongodb@^3.1.1:
+mongodb@^3.1.13:
   version "3.1.13"
   resolved "https://registry.yarnpkg.com/mongodb/-/mongodb-3.1.13.tgz#f8cdcbb36ad7a08b570bd1271c8525753f75f9f4"
   integrity sha512-sz2dhvBZQWf3LRNDhbd30KHVzdjZx9IKC0L+kSZ/gzYquCF5zPOgGqRz6sSCqYZtKP2ekB4nfLxhGtzGHnIKxA==
@@ -976,11 +975,6 @@ underscore.string@^3.3.4:
   dependencies:
     sprintf-js "^1.0.3"
     util-deprecate "^1.0.2"
-
-underscore@^1.9.1:
-  version "1.9.1"
-  resolved "https://registry.yarnpkg.com/underscore/-/underscore-1.9.1.tgz#06dce34a0e68a7babc29b365b8e74b8925203961"
-  integrity sha512-5/4etnCkd9c8gwgowi5/om/mYO5ajCaOgdzj/oW+0eQV9WxKBDZw5+ycmKmeaTXjInS/W0BzpGLo2xR2aBwZdg==
 
 unpipe@1.0.0, unpipe@~1.0.0:
   version "1.0.0"
