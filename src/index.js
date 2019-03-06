@@ -10,6 +10,12 @@ const corsOptions = {
   optionsSuccessStatus: 200
 };
 
+const passwords = {
+  h2ecommerce: '123Jens456',
+  nureinberg: 'gauche-turbid-red',
+  biobalancegermany: 'fragment-mufti-plow'
+}
+
 const PORT = process.env.PORT || 3000;
 
 app.use(cors(corsOptions));
@@ -17,18 +23,20 @@ app.use(cors(corsOptions));
 const postImage = data => {
   const { 
     account,
-    image,
+    imageUrl,
     caption
-  } = data
+  } = data;
+
+  const password = passwords[account];
 
   const device = new Client.Device(account);
-  const storage = new Client.CookieFileStorage(__dirname + `/cookies/${account}.json`);
+  const storage = new Client.CookieFileStorage(`${__dirname}/cookies/${account}.json`);
 
-  Client.Session.create(device, storage, account, '123Jens456')
+  Client.Session.create(device, storage, account, password)
     .then(function (session) {
       // Now you have a session, we can follow / unfollow, anything...
       // And we want to follow Instagram official profile
-      return [session, Client.Upload.photo(session, image)
+      return [session, Client.Upload.photo(session, imageUrl)
         .then(function (upload) {
           // upload instanceof Client.Upload
           // nothing more than just keeping upload id
@@ -45,7 +53,7 @@ const postImage = data => {
 app.post('/', (req, res) => {
   const event = {
     name: 'instagram-post',
-    after: new Date(Date.now() + 120000),
+    after: new Date(req.query.uploadDate),
     data: req.query,
   };
   scheduler.schedule(event);
