@@ -99,6 +99,7 @@ app.post('/list', (req, res) => {
     }
     res.send(events).status(200);
   });
+  console.log('List route ran!')
 });
 
 app.post('/remove', (req, res) => {
