@@ -3,6 +3,7 @@ const express = require('express');
 const Scheduler = require('mongo-scheduler-more');
 const { IncomingForm } = require('formidable');
 const cors = require('cors');
+const { rename } = require('fs');
 
 const scheduler = new Scheduler('mongodb://localhost:27017/instagram-schedule');
 const app = express();
