@@ -30,6 +30,7 @@ const postImage = data => {
   } = data;
 
   const password = passwords[account];
+  const captionDecoded = decodeURI(caption);
 
   const device = new Client.Device(account);
   const storage = new Client.CookieFileStorage(`${__dirname}/cookies/${account}.json`);
@@ -43,7 +44,7 @@ const postImage = data => {
           // upload instanceof Client.Upload
           // nothing more than just keeping upload id
           // console.log(upload.params.uploadId);
-          return Client.Media.configurePhoto(session, upload.params.uploadId, caption);
+          return Client.Media.configurePhoto(session, upload.params.uploadId, captionDecoded);
         })
         .then(function (medium) {
           // we configure medium, it is now visible with caption
@@ -82,12 +83,12 @@ app.post('/', (req, res) => {
   form.on('end', () => {
     const event = {
       name: 'instagram-post',
-      after: new Date(data.uploadDate),
+      after: new Date(Number(data.uploadDate)),
       data: data,
     };
 
     scheduler.schedule(event);
-    console.log(`Scheduled to account ${req.query.account}.`);
+    console.log(`Scheduled to account ${data.account}.`);
   });
 });
 
