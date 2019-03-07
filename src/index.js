@@ -30,7 +30,7 @@ const postImage = data => {
   } = data;
 
   const password = passwords[account];
-  const captionDecoded = decodeURIComponent(caption);
+  const captionDecoded = caption;
 
   const device = new Client.Device(account);
   const storage = new Client.CookieFileStorage(`${__dirname}/cookies/${account}.json`);
