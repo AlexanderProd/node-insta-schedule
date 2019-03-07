@@ -30,7 +30,7 @@ const postImage = data => {
   } = data;
 
   const password = passwords[account];
-  // const captionDecoded = decodeURI(caption);
+  const captionDecoded = decodeURIComponent(caption);
 
   const device = new Client.Device(account);
   const storage = new Client.CookieFileStorage(`${__dirname}/cookies/${account}.json`);
@@ -44,7 +44,7 @@ const postImage = data => {
           // upload instanceof Client.Upload
           // nothing more than just keeping upload id
           // console.log(upload.params.uploadId);
-          return Client.Media.configurePhoto(session, upload.params.uploadId, caption);
+          return Client.Media.configurePhoto(session, upload.params.uploadId, captionDecoded);
         })
         .then(function (medium) {
           // we configure medium, it is now visible with caption
