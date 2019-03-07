@@ -3,7 +3,7 @@ const express = require('express');
 const Scheduler = require('mongo-scheduler-more');
 const { IncomingForm } = require('formidable');
 const cors = require('cors');
-const { rename } = require('fs');
+const { rename, unlinkSync } = require('fs');
 
 const scheduler = new Scheduler('mongodb://localhost:27017/instagram-schedule');
 const app = express();
@@ -49,6 +49,7 @@ const postImage = data => {
         .then(function (medium) {
           // we configure medium, it is now visible with caption
           console.log(`Posted to account ${medium.params.user.username} with link ${medium.params.webLink}!`);
+          unlinkSync(imageUrl);
         })]
     });
 };
