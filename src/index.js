@@ -50,7 +50,7 @@ const postImage = data => {
           console.log(`Posted to account ${medium.params.user.username} with link ${medium.params.webLink}!`);
         })]
     });
-}
+};
 
 app.post('/', (req, res) => {
   const form = new IncomingForm();
@@ -59,7 +59,7 @@ app.post('/', (req, res) => {
   form.parse(req);
 
   form.on('file', (field, file) => {
-    const imageUrl = `../uploads/${escape(file.name)}`;
+    const imageUrl = `~/insta-schedule/uploads/${escape(file.name)}`;
 
     rename(file.path, imageUrl, (err) => {
       if (err) throw err;
