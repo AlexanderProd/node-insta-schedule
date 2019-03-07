@@ -89,6 +89,7 @@ app.post('/', (req, res) => {
 
     scheduler.schedule(event);
     console.log(`Scheduled to account ${data.account}.`);
+    res.sendStatus(200);
   });
 });
 
