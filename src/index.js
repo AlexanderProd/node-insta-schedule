@@ -11,13 +11,12 @@ const corsOptions = {
   origin: '*',
   optionsSuccessStatus: 200
 };
-
 const passwords = {
   h2ecommerce: '123Jens456',
   nureinberg: 'gauche-turbid-red',
   biobalancegermany: 'fragment-mufti-plow'
-}
-
+};
+const device = new Client.Device('iphone');
 const PORT = process.env.PORT || 3000;
 
 app.use(cors(corsOptions));
@@ -32,7 +31,6 @@ const postImage = data => {
   const password = passwords[account];
   const captionDecoded = caption;
 
-  const device = new Client.Device(account);
   const storage = new Client.CookieFileStorage(`${__dirname}/cookies/${account}.json`);
 
   Client.Session.create(device, storage, account, password)
