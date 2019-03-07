@@ -59,7 +59,7 @@ app.post('/', (req, res) => {
   form.parse(req);
 
   form.on('file', (field, file) => {
-    const imageUrl = `~/insta-schedule/uploads/${escape(file.name)}`;
+    const imageUrl = `/home/ubuntu/insta-schedule/uploads/${escape(file.name)}`;
 
     rename(file.path, imageUrl, (err) => {
       if (err) throw err;
