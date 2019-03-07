@@ -1,6 +1,7 @@
 const Client = require('instagram-private-api').V1;
 const express = require('express');
 const Scheduler = require('mongo-scheduler-more');
+const { IncomingForm } = require('formidable');
 const cors = require('cors');
 
 const scheduler = new Scheduler('mongodb://localhost:27017/instagram-schedule');
@@ -51,14 +52,42 @@ const postImage = data => {
 }
 
 app.post('/', (req, res) => {
-  const event = {
-    name: 'instagram-post',
-    after: new Date(req.query.uploadDate),
-    data: req.query,
-  };
-  scheduler.schedule(event);
-  console.log(`Scheduled to account ${req.query.account}.`);
-  res.sendStatus(200);
+  const form = new IncomingForm();
+  let data = {};
+
+  form.parse(req);
+
+  form.on('file', (field, file) => {
+    const imageUrl = `~/insta-schedule/uploads/${escape(file.name)}`;
+
+    rename(file.path, imageUrl, (err) => {
+      if (err) throw err;
+    });
+
+    data = {
+      ...data,
+      'imageUrl': imageUrl,
+    };
+
+  });
+
+  form.on('field', (field, value) => {
+    data = {
+      ...data,
+      [field]: value,
+    };
+  });
+
+  form.on('end', () => {
+    const event = {
+      name: 'instagram-post',
+      after: new Date(data.uploadDate),
+      data: data,
+    };
+
+    scheduler.schedule(event);
+    console.log(`Scheduled to account ${req.query.account}.`);
+  });
 });
 
 app.post('/list', (req, res) => {
