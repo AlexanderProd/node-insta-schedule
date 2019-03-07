@@ -8,7 +8,7 @@ module.exports = {
     instances: 1,
     autorestart: true,
     watch: true,
-    ignore_watch: 'src/cookies',
+    ignore_watch: ['src/cookies', 'uploads'],
     env: {
       NODE_ENV: 'production',
       PORT: 4480,
