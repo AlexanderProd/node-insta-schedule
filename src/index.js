@@ -17,7 +17,7 @@ const passwords = {
   biobalancegermany: 'fragment-mufti-plow'
 };
 const device = new Client.Device('iphone');
-const proxy = 'http://207.154.233.90:80';
+const proxy = 'http://213.136.86.234:80';
 const PORT = process.env.PORT || 3000;
 
 app.use(cors(corsOptions));
@@ -34,8 +34,9 @@ const postImage = data => {
 
   const storage = new Client.CookieFileStorage(`${__dirname}/cookies/${account}.json`);
 
-  Client.Session.create(device, storage, account, password, proxy)
+  Client.Session.create(device, storage, account, password)
     .then(function (session) {
+      Client.Request.setProxy(proxy);
       // Now you have a session, we can follow / unfollow, anything...
       // And we want to follow Instagram official profile
       return [session, Client.Upload.photo(session, imageUrl)
