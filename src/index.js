@@ -30,8 +30,6 @@ const postImage = data => {
   } = data;
 
   const password = passwords[account];
-  const captionDecoded = caption;
-
   const storage = new Client.CookieFileStorage(`${__dirname}/cookies/${account}.json`);
 
   Client.Session.create(device, storage, account, password)
@@ -44,13 +42,17 @@ const postImage = data => {
           // upload instanceof Client.Upload
           // nothing more than just keeping upload id
           // console.log(upload.params.uploadId);
-          return Client.Media.configurePhoto(session, upload.params.uploadId, captionDecoded);
+          return Client.Media.configurePhoto(session, upload.params.uploadId, caption);
         })
         .then(function (medium) {
           // we configure medium, it is now visible with caption
           console.log(`Posted to account ${medium.params.user.username} with link ${medium.params.webLink}!`);
           unlinkSync(imageUrl);
         })]
+    })
+    .catch(Client.Exceptions.CheckpointError, function (error) {
+      console.error(error);
+      unlinkSync(imageUrl);
     });
 };
 
