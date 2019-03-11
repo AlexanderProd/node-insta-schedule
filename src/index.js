@@ -1,9 +1,9 @@
 const Client = require('instagram-private-api').V1;
-const express = require('express');
 const Scheduler = require('mongo-scheduler-more');
 const { IncomingForm } = require('formidable');
-const cors = require('cors');
 const { rename, unlinkSync } = require('fs');
+const express = require('express');
+const cors = require('cors');
 
 const scheduler = new Scheduler('mongodb://localhost:27017/instagram-schedule');
 const app = express();
@@ -63,7 +63,8 @@ app.post('/', (req, res) => {
   form.parse(req);
 
   form.on('file', (field, file) => {
-    const imageUrl = `/home/ubuntu/insta-schedule/uploads/${Date.now()}-${escape(file.name)}`;
+    const fileName = `${Date.now()}-${escape(file.name)}`;
+    const imageUrl = `/home/ubuntu/insta-schedule/uploads/${fileName}`;
 
     rename(file.path, imageUrl, (err) => {
       if (err) throw err;
@@ -72,6 +73,7 @@ app.post('/', (req, res) => {
     data = {
       ...data,
       'imageUrl': imageUrl,
+      'fileName': fileName
     };
 
   });
@@ -107,6 +109,7 @@ app.post('/list', (req, res) => {
 });
 
 app.post('/remove', (req, res) => {
+  console.log(req.query)
   scheduler.remove('instagram-post', null, null, (err, event) => {
     if (err) {
       console.error(err);
@@ -115,6 +118,8 @@ app.post('/remove', (req, res) => {
     res.send(event).status(200);
   });
 });
+
+app.use('/uploads', express.static(`${__dirname}/../uploads`));
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}!`);
