@@ -64,7 +64,7 @@ app.post('/', (req, res) => {
 
   form.on('file', (field, file) => {
     const fileName = `${Date.now()}-${(file.name).replace(/[^a-zA-Z0-9.]/g, "")}`;
-    const imageUrl = `/home/ubuntu/insta-schedule/uploads/${fileName}`;
+    const imageUrl = `${__dirname}/../uploads/${fileName}`;
 
     rename(file.path, imageUrl, (err) => {
       if (err) throw err;
@@ -109,14 +109,24 @@ app.post('/list', (req, res) => {
 });
 
 app.post('/remove', (req, res) => {
-  console.log(req.query)
-  scheduler.remove('instagram-post', null, null, (err, event) => {
+  const { query } = req;
+
+  const sendRes = (err, event) => {
     if (err) {
       console.error(err);
       res.sendStatus(500);
     }
     res.send(event).status(200);
-  });
+    // unlinkSync(`${__dirname}/../uploads/${query.fileName}`);
+  }
+
+  if (query.all === 'true') {
+    scheduler.remove('instagram-post', null, null, sendRes(err, event));
+  } else if (query.id) {
+    scheduler.remove('instagram-post', query.id, null, sendRes(err, event));
+  } else {
+    res.send('Nothing specified to delete!').status(200);
+  }
 });
 
 app.use('/uploads', express.static(`${__dirname}/../uploads`));
