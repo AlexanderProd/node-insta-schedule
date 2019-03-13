@@ -111,19 +111,24 @@ app.post('/list', (req, res) => {
 app.post('/remove', (req, res) => {
   const { query } = req;
 
-  const sendRes = (err, event) => {
-    if (err) {
-      console.error(err);
-      res.sendStatus(500);
-    }
-    res.send(event).status(200);
-    // unlinkSync(`${__dirname}/../uploads/${query.fileName}`);
-  }
-
   if (query.all === 'true') {
-    scheduler.remove('instagram-post', null, null, sendRes(err, event));
+    scheduler.remove('instagram-post', null, null, (err, event) => {
+      if (err) {
+        console.error(err);
+        res.sendStatus(500);
+      }
+      res.send(event).status(200);
+      // unlinkSync(`${__dirname}/../uploads/${query.fileName}`);
+    });
   } else if (query.id) {
-    scheduler.remove('instagram-post', query.id, null, sendRes(err, event));
+    scheduler.remove('instagram-post', query.id, null, (err, event) => {
+      if (err) {
+        console.error(err);
+        res.sendStatus(500);
+      }
+      res.send(event).status(200);
+      // unlinkSync(`${__dirname}/../uploads/${query.fileName}`);
+    });
   } else {
     res.send('Nothing specified to delete!').status(200);
   }
