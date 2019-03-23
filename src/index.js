@@ -1,11 +1,13 @@
 const Client = require('instagram-private-api').V1;
-const Scheduler = require('mongo-scheduler-more');
 const { IncomingForm } = require('formidable');
 const { rename, unlinkSync } = require('fs');
+const msm = require('mongo-scheduler-more');
+const sendMail = require('./mailer');
 const express = require('express');
+// const mongo = require('mongodb');
 const cors = require('cors');
 
-const scheduler = new Scheduler('mongodb://localhost:27017/instagram-schedule');
+const scheduler = new msm('mongodb://localhost:27017/instagram-schedule');
 const app = express();
 const corsOptions = {
   origin: '*',
@@ -20,41 +22,52 @@ const device = new Client.Device('iphone');
 const proxy = 'http://213.136.86.234:80';
 const PORT = process.env.PORT || 3000;
 
-app.use(cors(corsOptions));
+/* const db = mongo.MongoClient.connect('mongodb://localhost:27017/', (err, client) => {
+  if (err) throw err;
+  return client.db('instagram-schedule');
+}); */
 
 const postImage = data => {
-  const { 
+  const {
     account,
     imageUrl,
     caption
   } = data;
 
   const password = passwords[account];
-  const storage = new Client.CookieFileStorage(`${__dirname}/cookies/${account}.json`);
+  const storage = new Client.CookieFileStorage(`${__dirname}/../cookies/${account}.json`);
 
-  Client.Session.create(device, storage, account, password)
-    .then(function (session) {
+  Client.Session.create(device, storage, account, 'password')
+    .then(session => {
       Client.Request.setProxy(proxy);
       // Now you have a session, we can follow / unfollow, anything...
       // And we want to follow Instagram official profile
       return [session, Client.Upload.photo(session, imageUrl)
-        .then(function (upload) {
+        .then(upload => {
           // upload instanceof Client.Upload
           // nothing more than just keeping upload id
           // console.log(upload.params.uploadId);
           return Client.Media.configurePhoto(session, upload.params.uploadId, caption);
         })
-        .then(function (medium) {
+        .then(medium => {
           // we configure medium, it is now visible with caption
           console.log(`Posted to account ${medium.params.user.username} with link ${medium.params.webLink}!`);
           unlinkSync(imageUrl);
+        })
+        .catch(async error => {
+          console.error(error);
+          await sendMail(error, data).catch(console.error);
+          unlinkSync(imageUrl);
         })]
     })
-    .catch(Client.Exceptions.CheckpointError, function (error) {
+    .catch(async error => {
       console.error(error);
+      await sendMail(error, data).catch(console.error);
       unlinkSync(imageUrl);
     });
 };
+
+app.use(cors(corsOptions));
 
 app.post('/', (req, res) => {
   const form = new IncomingForm();
@@ -99,7 +112,11 @@ app.post('/', (req, res) => {
 });
 
 app.post('/list', (req, res) => {
-  scheduler.list((err, events) => {
+  const filter = req.query.account 
+    ? { 'data.account' : req.query.account } 
+    : {};
+
+  scheduler.list({ bySchedule: true, filter }, (err, events) => {
     if (err) {
       console.error(err);
       res.sendStatus(500);
@@ -109,30 +126,37 @@ app.post('/list', (req, res) => {
 });
 
 app.post('/remove', (req, res) => {
-  const { query } = req;
+  const { id } = req.query;
+  
+  if (id) {
+    const params = { 
+      name: 'instagram-post',
+      id: id
+    };
 
-  if (query.all === 'true') {
-    scheduler.remove('instagram-post', null, null, (err, event) => {
+    scheduler.remove(params, (err, event) => {
       if (err) {
         console.error(err);
         res.sendStatus(500);
       }
-      res.send(event).status(200);
-      // unlinkSync(`${__dirname}/../uploads/${query.fileName}`);
-    });
-  } else if (query.id) {
-    scheduler.remove('instagram-post', query.id, null, (err, event) => {
-      if (err) {
-        console.error(err);
-        res.sendStatus(500);
-      }
-      res.send(event).status(200);
-      // unlinkSync(`${__dirname}/../uploads/${query.fileName}`);
+      res.send(event.result).status(200);
+      console.log(event.result);
+      // unlinkSync(event.imageUrl);
     });
   } else {
     res.send('Nothing specified to delete!').status(200);
   }
 });
+
+/* app.post('/test', (req, res) => {
+  const collection = db.collection('scheduled_events');
+  const id = mongo.ObjectID('5c954fe8c0aa23ea7337b20b');
+
+  collection.find({ _id: id}).toArray((err, docs) => {
+    assert.equal(err, null);
+    res.send(docs);
+  });
+}); */
 
 app.use('/uploads', express.static(`${__dirname}/../uploads`));
 
@@ -140,6 +164,6 @@ app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}!`);
 });
 
-scheduler.on('instagram-post', (meal, event) => {
+scheduler.on('instagram-post', event => {
   postImage(event.data);
 });

@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node src",
-    "dev": "nodemon src",
+    "dev": "nodemon src --ignore src/cookies/ --ignore uploads/",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -16,7 +16,9 @@
     "express": "^4.16.4",
     "formidable": "^1.2.1",
     "instagram-private-api": "^0.6.8",
-    "mongo-scheduler-more": "^1.2.1"
+    "mongo-scheduler-more": "^2.1.2",
+    "mongodb": "^3.2.2",
+    "nodemailer": "^5.1.1"
   },
   "devDependencies": {
     "nodemon": "^1.18.10"
