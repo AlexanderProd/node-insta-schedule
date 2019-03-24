@@ -16,7 +16,7 @@
     "express": "^4.16.4",
     "formidable": "^1.2.1",
     "instagram-private-api": "^0.6.8",
-    "mongo-scheduler-more": "^2.1.2",
+    "mongo-scheduler-more": "^2.1.3",
     "mongodb": "^3.2.2",
     "nodemailer": "^5.1.1"
   },
