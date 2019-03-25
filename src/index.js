@@ -37,7 +37,7 @@ const postImage = data => {
   const password = passwords[account];
   const storage = new Client.CookieFileStorage(`${__dirname}/../cookies/${account}.json`);
 
-  Client.Session.create(device, storage, account, 'password')
+  Client.Session.create(device, storage, account, password)
     .then(session => {
       Client.Request.setProxy(proxy);
       // Now you have a session, we can follow / unfollow, anything...
