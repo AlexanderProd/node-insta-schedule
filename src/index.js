@@ -1,10 +1,10 @@
+const { MongoClient, ObjectId} = require('mongodb');
 const Client = require('instagram-private-api').V1;
 const { IncomingForm } = require('formidable');
 const { rename, unlinkSync } = require('fs');
 const msm = require('mongo-scheduler-more');
 const sendMail = require('./mailer');
 const express = require('express');
-// const mongo = require('mongodb');
 const cors = require('cors');
 
 const scheduler = new msm('mongodb://localhost:27017/instagram-schedule');
@@ -22,10 +22,19 @@ const device = new Client.Device('iphone');
 const proxy = 'http://213.136.86.234:80';
 const PORT = process.env.PORT || 3000;
 
-/* const db = mongo.MongoClient.connect('mongodb://localhost:27017/', (err, client) => {
-  if (err) throw err;
-  return client.db('instagram-schedule');
-}); */
+const connection = 'mongodb://localhost:27017';
+const driverOptions = { useNewUrlParser: true };
+let ready = false;
+let db = null;
+
+MongoClient.connect(connection, driverOptions, (err, client) => {
+  if (err) {
+    throw err;
+  }
+  db = client.db('instagram-schedule');
+  ready = true;
+});
+
 
 const postImage = data => {
   const {
@@ -41,7 +50,6 @@ const postImage = data => {
     .then(session => {
       Client.Request.setProxy(proxy);
       // Now you have a session, we can follow / unfollow, anything...
-      // And we want to follow Instagram official profile
       return [session, Client.Upload.photo(session, imageUrl)
         .then(upload => {
           // upload instanceof Client.Upload
@@ -88,7 +96,6 @@ app.post('/', (req, res) => {
       'imageUrl': imageUrl,
       'fileName': fileName
     };
-
   });
 
   form.on('field', (field, value) => {
@@ -125,14 +132,31 @@ app.post('/list', (req, res) => {
   });
 });
 
-app.post('/remove', (req, res) => {
+app.post('/remove', async (req, res) => {
   const { id } = req.query;
   
+  const getFilePath = id => {
+    const collection = db.collection('scheduled_events');
+
+    if (ready && id) {
+      return new Promise((resolve, reject) => {
+        collection.find({ _id: ObjectId(id) }).toArray((err, items) => {
+          if (err) {
+            console.error(err);
+            reject(err);
+          }
+          resolve(items[0].data.imageUrl);
+        });
+      });
+    }
+  }
+
   if (id) {
     const params = { 
       name: 'instagram-post',
       id: id
     };
+    const filePath = await getFilePath(id);
 
     scheduler.remove(params, (err, event) => {
       if (err) {
@@ -141,22 +165,12 @@ app.post('/remove', (req, res) => {
       }
       res.send(event.result).status(200);
       console.log(event.result);
-      // unlinkSync(event.imageUrl);
     });
+    unlinkSync(filePath);
   } else {
     res.send('Nothing specified to delete!').status(200);
   }
 });
-
-/* app.post('/test', (req, res) => {
-  const collection = db.collection('scheduled_events');
-  const id = mongo.ObjectID('5c954fe8c0aa23ea7337b20b');
-
-  collection.find({ _id: id}).toArray((err, docs) => {
-    assert.equal(err, null);
-    res.send(docs);
-  });
-}); */
 
 app.use('/uploads', express.static(`${__dirname}/../uploads`));
 
