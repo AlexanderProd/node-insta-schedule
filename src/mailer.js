@@ -7,7 +7,6 @@ const sendMail = async (error, data) => {
     caption,
   } = data;
 
-  // create reusable transporter object using the default SMTP transport
   const transporter = nodemailer.createTransport({
     host: 'bernd.php-friends.de',
     port: 465,
@@ -19,7 +18,6 @@ const sendMail = async (error, data) => {
     debug: true,
   });
 
-  // setup email data with unicode symbols
   const mailOptions = {
     from: '"H2 Bot" <bot@h2ecommerce.de>',
     to: "mail@h2ecommerce.de",
@@ -43,7 +41,6 @@ const sendMail = async (error, data) => {
     ]
   };
 
-  // send mail with defined transport object
   const info = await transporter.sendMail(mailOptions);
 
   console.log(info);

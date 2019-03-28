@@ -7,12 +7,14 @@ const sendMail = require('./mailer');
 const express = require('express');
 const cors = require('cors');
 
-const scheduler = new msm('mongodb://localhost:27017/instagram-schedule');
+const PORT = process.env.PORT || 3000;
+
 const app = express();
 const corsOptions = {
   origin: '*',
   optionsSuccessStatus: 200
 };
+
 const passwords = {
   h2ecommerce: '123Jens456',
   nureinberg: 'gauche-turbid-red',
@@ -20,12 +22,21 @@ const passwords = {
 };
 const device = new Client.Device('iphone');
 const proxy = 'http://213.136.86.234:80';
-const PORT = process.env.PORT || 3000;
 
-const connection = 'mongodb://localhost:27017';
-const driverOptions = { useNewUrlParser: true };
+const mongodb = 'mongodb://3.121.177.95:27017/instagram-schedule'
+const mongodbAuth = {
+  user: 'instagramScheduleUser',
+  password: 'DhhkDddL3UwFIAeizAXC0lkeezzKbK0T31w6TE'
+};
+const scheduler = new msm(mongodb, { auth: mongodbAuth });
+const connection = 'mongodb://3.121.177.95:27017/instagram-schedule';
+const driverOptions = {
+  useNewUrlParser: true,
+  auth: mongodbAuth
+};
 let ready = false;
 let db = null;
+
 
 MongoClient.connect(connection, driverOptions, (err, client) => {
   if (err) {
@@ -149,10 +160,10 @@ app.post('/remove', async (req, res) => {
         });
       });
     }
-  }
+  };
 
   if (id) {
-    const params = { 
+    const params = {
       name: 'instagram-post',
       id: id
     };
