@@ -23,28 +23,25 @@ const passwords = {
 const device = new Client.Device('iphone');
 const proxy = 'http://213.136.86.234:80';
 
-const mongodb = 'mongodb://3.121.177.95:27017/instagram-schedule'
-const mongodbAuth = {
-  user: 'instagramScheduleUser',
-  password: 'DhhkDddL3UwFIAeizAXC0lkeezzKbK0T31w6TE'
-};
-const scheduler = new msm(mongodb, { auth: mongodbAuth });
 const connection = 'mongodb://3.121.177.95:27017/instagram-schedule';
 const driverOptions = {
   useNewUrlParser: true,
-  auth: mongodbAuth
+  auth: {
+    user: 'instagramScheduleUser',
+    password: 'DhhkDddL3UwFIAeizAXC0lkeezzKbK0T31w6TE'
+  }
 };
 let ready = false;
 let db = null;
 
-
-MongoClient.connect(connection, driverOptions, (err, client) => {
+MongoClient.connect(connection, driverOptions, async (err, client) => {
   if (err) {
     throw err;
   }
-  db = client.db('instagram-schedule');
+  db = await client.db('instagram-schedule');
   ready = true;
 });
+const scheduler = new msm(connection, driverOptions);
 
 
 const postImage = data => {
@@ -119,6 +116,7 @@ app.post('/', (req, res) => {
   form.on('end', () => {
     const event = {
       name: 'instagram-post',
+      id: String(Date.now()),
       after: new Date(Number(data.uploadDate)),
       data: data,
     };
