@@ -189,7 +189,7 @@ app.use('/uploads', express.static(`${__dirname}/../uploads`));
 
 app.listen(PORT, () => {
   console.log(
-    `App listening on port ${PORT} runnung in ${process.env.NODE_ENV ? true : 'dev'}!`
+    `App listening on port ${PORT} runnung in ${process.env.NODE_ENV ? process.env.NODE_ENV : 'dev'}!`
   );
 });
 
