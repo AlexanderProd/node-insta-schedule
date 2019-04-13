@@ -14,4 +14,14 @@ module.exports = {
       PORT: 4480,
     },
   }],
+  deploy: {
+    production : {
+      key: '~/.ssh/ubuntu-ec2.pem',
+      user: 'ubuntu',
+      host: 'ec2-3-121-177-95.eu-central-1.compute.amazonaws.com',
+      ref: 'git@github.com:AlexanderProd/insta-schedule.git',
+      repo: 'git@github.com:AlexanderProd/insta-schedule.git',
+      path: '/home/ubuntu/test',
+    }
+  }
 };
