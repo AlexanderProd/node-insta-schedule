@@ -34,11 +34,11 @@ const driverOptions = {
 let ready = false;
 let db = null;
 
-MongoClient.connect(connection, driverOptions, async (err, client) => {
+MongoClient.connect(connection, driverOptions, (err, client) => {
   if (err) {
     throw err;
   }
-  db = await client.db('instagram-schedule');
+  db = client.db('instagram-schedule');
   ready = true;
 });
 const scheduler = new msm(connection, driverOptions);
