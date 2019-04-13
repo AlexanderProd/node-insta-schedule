@@ -15,22 +15,18 @@ const corsOptions = {
   optionsSuccessStatus: 200
 };
 
-const passwords = {
-  h2ecommerce: '123Jens456',
-  nureinberg: 'gauche-turbid-red',
-  biobalancegermany: 'fragment-mufti-plow'
-};
-const device = new Client.Device('iphone');
-const proxy = 'http://213.136.86.234:80';
-
-const connection = 'mongodb://3.121.177.95:27017/instagram-schedule';
-const driverOptions = {
-  useNewUrlParser: true,
-  auth: {
-    user: 'instagramScheduleUser',
-    password: 'DhhkDddL3UwFIAeizAXC0lkeezzKbK0T31w6TE'
-  }
-};
+const connection = process.env.NODE_ENV === 'production'
+  ? 'mongodb://3.121.177.95:27017/instagram-schedule' 
+  : 'mongodb://localhost:27017/instagram-schedule';
+const driverOptions = process.env.NODE_ENV === 'production'
+  ? {
+      useNewUrlParser: true,
+      auth: {
+        user: 'instagramScheduleUser',
+        password: 'DhhkDddL3UwFIAeizAXC0lkeezzKbK0T31w6TE'
+      }
+    }
+  : { useNewUrlParser: true };
 let ready = false;
 let db = null;
 
@@ -42,6 +38,14 @@ MongoClient.connect(connection, driverOptions, (err, client) => {
   ready = true;
 });
 const scheduler = new msm(connection, driverOptions);
+
+const passwords = {
+  h2ecommerce: '123Jens456',
+  nureinberg: 'gauche-turbid-red',
+  biobalancegermany: 'fragment-mufti-plow'
+};
+const device = new Client.Device('iphone');
+const proxy = 'http://213.136.86.234:80';
 
 
 const postImage = data => {
