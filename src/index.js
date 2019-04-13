@@ -188,7 +188,9 @@ app.post('/remove', async (req, res) => {
 app.use('/uploads', express.static(`${__dirname}/../uploads`));
 
 app.listen(PORT, () => {
-  console.log(`App listening on port ${PORT}!`);
+  console.log(
+    `App listening on port ${PORT} runnung in ${process.env.NODE_ENV ? true : 'dev'}!`
+  );
 });
 
 scheduler.on('instagram-post', event => {
