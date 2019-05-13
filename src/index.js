@@ -65,7 +65,7 @@ const scheduler = new msm(connection, driverOptions);
 
 const passwords = {
   h2ecommerce: '123Jens456',
-  nureinberg: 'gauche-turbid-red',
+  nureinberg: 'odd-oxen-auditor',
   biobalancegermany: 'fragment-mufti-plow'
 };
 const device = new Client.Device('iphone');
@@ -283,7 +283,7 @@ app.post('/addAccount', async (req, res) => {
   const query = User.updateOne({ _id: doc._id }, { test: instagramUsername });
 
   res.send(query).status(200);
-})
+});
 
 app.use('/uploads', express.static(`${__dirname}/../uploads`));
 
