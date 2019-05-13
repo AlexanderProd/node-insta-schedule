@@ -2,7 +2,7 @@
 module.exports = {
   apps : [{
     name: 'Instagram Schedule',
-    script: 'src/index.js',
+    script: 'src',
 
     // Options reference: https://pm2.io/doc/en/runtime/reference/ecosystem-file/
     instances: 1,
@@ -12,6 +12,7 @@ module.exports = {
     env: {
       NODE_ENV: 'production',
       PORT: 4480,
+      SECRET: '',
     },
   }],
   deploy: {
