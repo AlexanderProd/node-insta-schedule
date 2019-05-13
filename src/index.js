@@ -1,17 +1,34 @@
 const { MongoClient, ObjectId} = require('mongodb');
+const mongoose = require('mongoose');
 const Client = require('instagram-private-api').V1;
 const { IncomingForm } = require('formidable');
 const { rename, unlinkSync } = require('fs');
 const msm = require('mongo-scheduler-more');
-const sendMail = require('./mailer');
 const express = require('express');
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+const jwt = require('jsonwebtoken');
 const cors = require('cors');
+const sendMail = require('./sendMail');
+const withAuth = require('./withAuth');
+const User = require('./models/User');
+
 
 const PORT = process.env.PORT || 3000;
+const SECRET = process.env.SECRET || 'yHSHGuYkD4YMryOU1mJUId4zUihMNg';
+const PROXY = process.env.PROXY;
 
 const app = express();
+const whitelist = ['http://localhost:3001', 'https://dash.h2ecommerce.de']
 const corsOptions = {
-  origin: '*',
+  origin: (origin, callback) => {
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  },
+  credentials: true,
   optionsSuccessStatus: 200
 };
 
@@ -37,6 +54,11 @@ MongoClient.connect(connection, driverOptions, (err, client) => {
   db = client.db('instagram-schedule');
   ready = true;
 });
+
+mongoose.connect(connection, driverOptions, (err) => {
+  if (err) throw err;
+});
+
 const scheduler = new msm(connection, driverOptions);
 
 const passwords = {
@@ -45,7 +67,6 @@ const passwords = {
   biobalancegermany: 'fragment-mufti-plow'
 };
 const device = new Client.Device('iphone');
-const proxy = 'http://213.136.86.234:80';
 
 
 const postImage = data => {
@@ -60,7 +81,7 @@ const postImage = data => {
 
   Client.Session.create(device, storage, account, password)
     .then(session => {
-      Client.Request.setProxy(proxy);
+      if (typeof(PROXY) === String) Client.Request.setProxy(PROXY);
       // Now you have a session, we can follow / unfollow, anything...
       return [session, Client.Upload.photo(session, imageUrl)
         .then(upload => {
@@ -88,6 +109,9 @@ const postImage = data => {
 };
 
 app.use(cors(corsOptions));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(cookieParser());
 
 app.post('/', (req, res) => {
   const form = new IncomingForm();
@@ -184,6 +208,80 @@ app.post('/remove', async (req, res) => {
     res.send('Nothing specified to delete!').status(200);
   }
 });
+
+app.post('/authenticate', (req, res) => {
+  const { email, password } = req.body;
+  User.findOne({ email }, (err, user) => {
+    if (err) {
+      console.error(err);
+      res.status(500)
+        .json({
+          error: 'Internal error please try again'
+        });
+    } else if (!user) {
+      res.status(401)
+        .json({
+          error: 'Incorrect email or password'
+        });
+    } else {
+      user.isCorrectPassword(password, (err, same) => {
+        if (err) {
+          res.status(500)
+            .json({
+              error: 'Internal error please try again'
+            });
+        } else if (!same) {
+          res.status(401)
+            .json({
+              error: 'Incorrect email or password'
+            });
+        } else {
+          // Issue token
+          const payload = { email };
+          const token = jwt.sign(payload, SECRET, {
+            expiresIn: '1h'
+          });
+          res.cookie('token', token, { httpOnly: false }).sendStatus(200);
+        }
+      });
+    }
+  });
+});
+
+app.post('/register', (req, res) => {
+  const { email, password } = req.body;
+  const user = new User({ email, password });
+  user.save((err) => {
+    if (err) {
+      console.log(err);
+      res.status(500).send("Error registering new user please try again.");
+    } else {
+      res.status(200).send("Welcome to the club!");
+    }
+  });
+});
+
+app.post('/checkToken', withAuth, (req, res) => {
+  res.sendStatus(200);
+});
+
+app.post('/addAccount', async (req, res) => {
+  const { 
+    accountEmail, 
+    instagramUsername, 
+    instagramPassword 
+  } = req.body;
+
+  const doc = await User.findOne({ email: accountEmail });
+  
+  /* const query = doc.updateOne(
+    { _id: doc._id },
+    { '$set': { test: instagramUsername } }
+  ); */
+  const query = User.updateOne({ _id: doc._id }, { test: instagramUsername });
+
+  res.send(query).status(200);
+})
 
 app.use('/uploads', express.static(`${__dirname}/../uploads`));
 
