@@ -94,7 +94,7 @@ const postImage = data => {
         })
         .then(medium => {
           // we configure medium, it is now visible with caption
-          console.log(`Posted to account ${medium.params.user.username} with link ${medium.params.webLink}!`);
+          console.log(`Posted to account ${medium.params.user.username} with link ${medium.params.webLink}`);
           unlinkSync(imageUrl);
         })
         .catch(async error => {
