@@ -35,7 +35,7 @@ const corsOptions = {
 };
 
 const connection = process.env.NODE_ENV === 'production'
-  ? 'mongodb://3.121.177.95:27017/instagram-schedule' 
+  ? 'mongodb://165.22.93.110:27017/instagram-schedule' 
   : 'mongodb://localhost:27017/instagram-schedule';
 const driverOptions = process.env.NODE_ENV === 'production'
   ? {
