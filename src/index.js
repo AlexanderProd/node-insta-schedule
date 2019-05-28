@@ -9,6 +9,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
+
 const sendMail = require('./sendMail');
 const withAuth = require('./withAuth');
 const User = require('./models/User');
@@ -35,7 +36,7 @@ const corsOptions = {
 };
 
 const connection = process.env.NODE_ENV === 'production'
-  ? 'mongodb://165.22.93.110:27017/instagram-schedule' 
+  ? 'mongodb://165.227.156.236:27017/instagram-schedule' 
   : 'mongodb://localhost:27017/instagram-schedule';
 const driverOptions = process.env.NODE_ENV === 'production'
   ? {
