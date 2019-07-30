@@ -66,7 +66,7 @@ const scheduler = new msm(connection, driverOptions);
 
 const passwords = {
   h2ecommerce: '123Jens456',
-  nureinberg: 'odd-oxen-auditor',
+  nureineburg: "m0C78a5lcuXU&B'",
   biobalancegermany: 'fragment-mufti-plow'
 };
 const device = new Client.Device('iphone');
