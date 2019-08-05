@@ -90,7 +90,9 @@ const postImage = async data => {
   
   ig.state.generateDevice(account);
   try {
+    await ig.simulate.preLoginFlow();
     await ig.account.login(account, password);
+    process.nextTick(async () => await ig.simulate.postLoginFlow());
     await ig.publish.photo({
       file: await readFilePromise(imageUrl),
       'caption': caption,
