@@ -58,7 +58,7 @@ let db = null;
 
 const passwords = {
   h2ecommerce: '123Jens456',
-  nureineburg: "m0C78a5lcuXU&B'",
+  nureineburg: 'sjDs9Kmr9pu3xcdWdDtg9huu',
   biobalancegermany: 'fragment-mufti-plow'
 };
 
