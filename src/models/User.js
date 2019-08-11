@@ -6,7 +6,12 @@ const saltRounds = 10;
 const UserSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  instagram_accounts: []
+  instagramAccounts: [
+    {
+      username: String,
+      session: String
+    }
+  ],
 });
 
 UserSchema.pre('save', function(next) {
