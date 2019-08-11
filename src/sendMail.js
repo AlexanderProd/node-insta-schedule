@@ -23,8 +23,8 @@ const sendMail = async (error, data) => {
     to: "mail@h2ecommerce.de",
     subject: "❌ Instagram Post fehlgeschlagen!",
     text: 
-      `Ein Instagram Post für ${account} ist fehlgeschlagen! \n\n
-      Beschreibung: \n
+      `Ein Instagram Post für ${account} ist fehlgeschlagen! \n
+      Beschreibung:
       ${caption}`,
     attachments: [
       {
