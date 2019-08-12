@@ -209,7 +209,7 @@ const restoreSession = async (accountEmail, instagramUsername) => {
     });
   });
 
-  app.post('/list', (req, res) => {
+  app.post('/list/posts', (req, res) => {
     const filter = req.query.account
       ? { 'data.account': req.query.account }
       : {};
@@ -296,7 +296,7 @@ const restoreSession = async (accountEmail, instagramUsername) => {
             });
             res
               .cookie('token', token, { httpOnly: false })
-              .cookie('accountEmail', email, { maxAge: 60*60*1000 })
+              .cookie('accountEmail', email, { maxAge: 60 * 60 * 1000, httpOnly: false })
               .sendStatus(200);
           }
         });
@@ -345,6 +345,25 @@ const restoreSession = async (accountEmail, instagramUsername) => {
       res.status(200).send(query);
     } catch (error) {
       res.status(500).send(error);
+    }
+  });
+
+  app.post('/list/instagramAccounts', async (req, res) => {
+    const { accountEmail } = req.body;
+    if (accountEmail === undefined) {
+      return res.status(404).json({ error: 'No account email provided' });
+    }
+    try {
+      const query = await User.find({ email: accountEmail });
+      const { instagramAccounts } = query[0];
+      const usernames = []; 
+
+      instagramAccounts.forEach((elem) => {
+        usernames.push(elem.username);
+      });
+      res.status(200).send(usernames);
+    } catch (error) {
+      res.sendStatus(500);
     }
   });
 
