@@ -264,7 +264,8 @@ const restoreSession = async (accountEmail, instagramUsername) => {
   });
 
   app.post('/authenticate', (req, res) => {
-    const { email, password } = req.body;
+    const { email, password, stayLoggedIn } = req.body;
+
     User.findOne({ email }, (err, user) => {
       if (err) {
         console.error(err);
@@ -292,11 +293,11 @@ const restoreSession = async (accountEmail, instagramUsername) => {
           } else {
             // Issue token
             const payload = { email };
-            const token = jwt.sign(payload, SECRET, {
-              expiresIn: '1h'
-            });
-            res
-              .cookie('token', token, { httpOnly: false }).sendStatus(200);
+            const options = stayLoggedIn 
+              ? {} 
+              : { expiresIn: '1h' };
+            const token = jwt.sign(payload, SECRET, options);
+            res.cookie('token', token, { httpOnly: false }).sendStatus(200);
           }
         });
       }
