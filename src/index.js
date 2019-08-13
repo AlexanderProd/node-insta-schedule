@@ -210,11 +210,12 @@ const restoreSession = async (accountEmail, instagramUsername) => {
   });
 
   app.post('/list/posts', (req, res) => {
-    const filter = req.query.account
-      ? { 'data.account': req.query.account }
+    const { accountEmail } = req.body;
+    const filter = accountEmail
+      ? { 'data.accountEmail': accountEmail }
       : {};
 
-    scheduler.list({ bySchedule: true, filter }, (err, events) => {
+    scheduler.list({ bySchedule: true, query: filter }, (err, events) => {
       if (err) {
         console.error(err);
         res.sendStatus(500);
@@ -318,7 +319,7 @@ const restoreSession = async (accountEmail, instagramUsername) => {
   });
 
   app.post('/checkToken', withAuth, (req, res) => {
-    res.sendStatus(200);
+    res.status(200).send(req.email);
   });
 
   app.post('/addInstagram', async (req, res) => {
