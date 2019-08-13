@@ -182,10 +182,15 @@ const restoreSession = async (accountEmail, instagramUsername) => {
       }
     }
 
+    const generateFileName = () => (
+      String(Math.random().toString(36).substring(2, 15) 
+      + Math.random().toString(36).substring(2, 15))
+    )
+
     form.parse(req);
 
     form.on('file', (field, file) => {
-      const fileName = `${Date.now()}-${(file.name).replace(/[^a-zA-Z0-9.]/g, "")}`;
+      const fileName = `${generateFileName()}.jpg`;
       const imageUrl = `${__dirname}/../uploads/${fileName}`;
 
       rename(file.path, imageUrl, (err) => {
