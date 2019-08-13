@@ -171,6 +171,16 @@ const restoreSession = async (accountEmail, instagramUsername) => {
   app.post('/', (req, res) => {
     const form = new IncomingForm();
     let data = {};
+    
+    // adds or subtracts 0-59 seconds
+    const randomizeUploadDate = date => {
+      const timeOffeset = Math.floor(Math.random() * 59000) + 1
+      if (Math.random() >= 0.5){
+        return date + timeOffeset
+      } else {
+        return date - timeOffeset
+      }
+    }
 
     form.parse(req);
 
@@ -200,7 +210,9 @@ const restoreSession = async (accountEmail, instagramUsername) => {
       const event = {
         name: 'instagram-post',
         id: String(Date.now()),
-        after: new Date(Number(data.uploadDate)),
+        after: new Date(
+          randomizeUploadDate(Number(data.uploadDate))
+        ),
         data: data,
       };
 
