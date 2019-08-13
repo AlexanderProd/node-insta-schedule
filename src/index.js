@@ -296,9 +296,7 @@ const restoreSession = async (accountEmail, instagramUsername) => {
               expiresIn: '1h'
             });
             res
-              .cookie('token', token, { httpOnly: false })
-              .cookie('accountEmail', email, { maxAge: 60 * 60 * 1000, httpOnly: false })
-              .sendStatus(200);
+              .cookie('token', token, { httpOnly: false }).sendStatus(200);
           }
         });
       }
