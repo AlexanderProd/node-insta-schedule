@@ -2,7 +2,8 @@ const nodemailer = require("nodemailer");
 
 const sendMail = async (error, data) => {
   const {
-    account,
+    instagramUsername,
+    accountEmail,
     imageUrl,
     caption,
   } = data;
@@ -12,18 +13,18 @@ const sendMail = async (error, data) => {
     port: 465,
     secure: true,
     auth: {
-      user: 'bot@h2ecommerce.de',
-      pass: 'f9W*iw',
+      user: 'insta-bot@alexanderhoerl.de',
+      pass: 'jV6S9yKgtZ0mT3u2',
     },
     debug: true,
   });
 
   const mailOptions = {
-    from: '"H2 Bot" <bot@h2ecommerce.de>',
-    to: "mail@h2ecommerce.de",
-    subject: "❌ Instagram Post fehlgeschlagen!",
+    from: '"H2 Bot" <insta-bot@alexanderhoerl.de>',
+    to: accountEmail,
+    subject: '❌ Instagram Post fehlgeschlagen!',
     text: 
-      `Ein Instagram Post für ${account} ist fehlgeschlagen! \n
+      `Ein Instagram Post für ${instagramUsername} ist fehlgeschlagen! \n
       Beschreibung:
       ${caption}`,
     attachments: [
