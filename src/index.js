@@ -194,7 +194,7 @@ const restoreSession = async (accountEmail, instagramUsername) => {
       const imageUrl = `${__dirname}/../uploads/${fileName}`;
 
       rename(file.path, imageUrl, (err) => {
-        if (err) throw err;
+        if (err) return res.sendStatus(500);
       });
 
       data = {
@@ -341,20 +341,19 @@ const restoreSession = async (accountEmail, instagramUsername) => {
   app.post('/addInstagram', async (req, res) => {
     const {
       accountEmail,
-      instagramUsername,
-      instagramPassword
+      username,
+      password,
     } = req.body;
-
-    const session = await createInstaSession(instagramUsername, instagramPassword)
-
+    
     try {
+      const session = await createInstaSession(username, password);
       const query = await User.updateOne(
         { email: accountEmail },
         {
           '$push': {
             instagramAccounts: {
-              username: instagramUsername,
-              'session': session
+              username: username,
+              session: session,
             }
           }
         }
