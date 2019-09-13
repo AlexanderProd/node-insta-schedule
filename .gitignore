@@ -3,3 +3,4 @@ node_modules
 src/cookies
 uploads/*
 cookies/
+config.json

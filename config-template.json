@@ -1,0 +1,12 @@
+{
+  "whitelist": [
+    "",
+    ""
+  ],
+  "mongoDB": {
+    "urlProd": "",
+    "urlDev": "",
+    "user": "",
+    "password": ""
+  }
+}

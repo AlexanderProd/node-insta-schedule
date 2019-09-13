@@ -14,19 +14,17 @@ const { promisify } = require('util');
 const sendMail = require('./sendMail');
 const withAuth = require('./withAuth');
 const User = require('./models/User');
-
+const config = require('../config.json')
 
 const ig = new IgApiClient();
 const app = express();
+
 const PORT = process.env.PORT || 3000;
 const SECRET = process.env.SECRET || 'yHSHGuYkD4YMryOU1mJUId4zUihMNg';
-const whitelist = [
-  'http://localhost:3001',
-  'https://insta-schedule.alexanderhoerl.de'
-];
+
 const corsOptions = {
   origin: (origin, callback) => {
-    if (whitelist.indexOf(origin) !== -1) {
+    if (config.whitelist.indexOf(origin) !== -1) {
       callback(null, true);
     // allow Postman requests for development
     } else if (origin === undefined && !isProd()) {
@@ -40,15 +38,15 @@ const corsOptions = {
 };
 
 const connection = isProd()
-  ? 'mongodb://165.227.156.236:27017/instagramSchedulerDB'
-  : 'mongodb://localhost:27017/instagramSchedulerDB';
+  ? config.mongoDB.urlProd
+  : config.mongoDB.urlDev;
 
 const driverOptions = isProd()
   ? {
     useNewUrlParser: true,
     auth: {
-      user: 'instagramScheduleUser',
-      password: 'DhhkDddL3UwFIAeizAXC0lkeezzKbK0T31w6TE'
+      user: config.mongo.user,
+      password: config.mongo.password
     }
   }
   : { useNewUrlParser: true };
