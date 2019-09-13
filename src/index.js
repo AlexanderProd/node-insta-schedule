@@ -16,11 +16,10 @@ const withAuth = require('./withAuth');
 const User = require('./models/User');
 
 
-const PORT = process.env.PORT || 3000;
-const SECRET = process.env.SECRET || 'yHSHGuYkD4YMryOU1mJUId4zUihMNg';
-
 const ig = new IgApiClient();
 const app = express();
+const PORT = process.env.PORT || 3000;
+const SECRET = process.env.SECRET || 'yHSHGuYkD4YMryOU1mJUId4zUihMNg';
 const whitelist = [
   'http://localhost:3001',
   'https://insta-schedule.alexanderhoerl.de'
@@ -29,7 +28,8 @@ const corsOptions = {
   origin: (origin, callback) => {
     if (whitelist.indexOf(origin) !== -1) {
       callback(null, true);
-    } else if (origin === undefined) {
+    // allow Postman requests for development
+    } else if (origin === undefined && !isProd()) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
@@ -39,11 +39,11 @@ const corsOptions = {
   optionsSuccessStatus: 200,
 };
 
-const connection = process.env.NODE_ENV === 'production'
+const connection = isProd()
   ? 'mongodb://165.227.156.236:27017/instagramSchedulerDB'
   : 'mongodb://localhost:27017/instagramSchedulerDB';
 
-const driverOptions = process.env.NODE_ENV === 'production'
+const driverOptions = isProd()
   ? {
     useNewUrlParser: true,
     auth: {
@@ -58,6 +58,13 @@ const readFilePromise = promisify(readFile);
 
 let db = null;
 
+
+function isProd() {
+  if (process.env.NODE_ENV === 'production') {
+    return true;
+  }
+  return false;
+}
 
 const connectMongoClient = () => {
   return new Promise((resolve, reject) => {
