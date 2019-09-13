@@ -247,17 +247,15 @@ const restoreSession = async (accountEmail, instagramUsername) => {
     const getFilePath = id => {
       const collection = db.collection('scheduled_events');
 
-      if (id) {
-        return new Promise((resolve, reject) => {
-          collection.find({ _id: ObjectId(id) }).toArray((err, items) => {
-            if (err) {
-              console.error(err);
-              reject(err);
-            }
-            resolve(items[0].data.imageUrl);
-          });
+      return new Promise((resolve, reject) => {
+        collection.find({ _id: ObjectId(id) }).toArray((err, items) => {
+          if (err) {
+            console.error(err);
+            reject(err);
+          }
+          resolve(items[0].data.imageUrl);
         });
-      }
+      });
     };
 
     if (id) {
