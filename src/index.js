@@ -90,10 +90,9 @@ const postImage = async data => {
     imageUrl,
     caption
   } = data;
-
-  await restoreSession(accountEmail, instagramUsername);
-
+  
   try {
+    await restoreSession(accountEmail, instagramUsername);
     await ig.publish.photo({
       file: await readFilePromise(imageUrl),
       'caption': caption,
@@ -108,7 +107,7 @@ const postImage = async data => {
 const createInstaSession = (username, password) => {
   return new Promise(async (resolve, reject) => {
     try {
-      await ig.state.generateDevice(username);
+      ig.state.generateDevice(username);
       await ig.simulate.preLoginFlow();
 
       ig.request.end$.subscribe(async () => {
