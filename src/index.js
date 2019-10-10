@@ -4,12 +4,14 @@ const cors = require('cors');
 const express = require('express');
 const { IncomingForm } = require('formidable');
 const { readFile, rename, unlinkSync } = require('fs');
-const { IgApiClient } = require('instagram-private-api');
+const { IgApiClient, IgCheckpointError } = require('instagram-private-api');
 const { MongoClient, ObjectId } = require('mongodb');
 const mongoose = require('mongoose');
 const msm = require('mongo-scheduler-more');
 const jwt = require('jsonwebtoken');
 const { promisify } = require('util');
+const inquirer = require('inquirer');
+
 
 const sendMail = require('./sendMail');
 const withAuth = require('./withAuth');
@@ -106,32 +108,47 @@ const postImage = async data => {
 
 const createInstaSession = (username, password) => {
   return new Promise(async (resolve, reject) => {
+    ig.state.generateDevice(username);
+    await ig.simulate.preLoginFlow();
+
     try {
-      ig.state.generateDevice(username);
-      await ig.simulate.preLoginFlow();
-
-      ig.request.end$.subscribe(async () => {
-        const cookies = await ig.state.serializeCookieJar();
-        const state = {
-          deviceString: ig.state.deviceString,
-          deviceId: ig.state.deviceId,
-          uuid: ig.state.uuid,
-          phoneId: ig.state.phoneId,
-          adid: ig.state.adid,
-          build: ig.state.build,
-        }
-
-        const session = {
-          'cookies': cookies,
-          'state': state,
-        }
-        const base64Session = Buffer.from(JSON.stringify(session)).toString('base64');
-        resolve(base64Session);
-      });
       await ig.account.login(username, password);
     } catch (error) {
-      reject(error);
+      if (error instanceof IgCheckpointError) {
+        await ig.challenge.auto(true);
+        console.log(ig.state.checkpoint);
+        const { code } = await inquirer.prompt([{
+          type: 'input',
+          name: 'code',
+          message: 'Enter code',
+        }]);
+        try {
+          await ig.challenge.sendSecurityCode(code);
+        } catch (error) {
+          console.error(error);
+          reject(error);
+        }
+      } else {
+        console.error(error);
+        reject(error);
+      }
     }
+
+    const cookies = await ig.state.serializeCookieJar();
+    const state = {
+      deviceString: ig.state.deviceString,
+      deviceId: ig.state.deviceId,
+      uuid: ig.state.uuid,
+      phoneId: ig.state.phoneId,
+      adid: ig.state.adid,
+      build: ig.state.build,
+    }
+    const session = {
+      'cookies': cookies,
+      'state': state,
+    }
+    const base64Session = Buffer.from(JSON.stringify(session)).toString('base64');
+    resolve(base64Session);
   });
 }
 
@@ -139,12 +156,12 @@ const restoreSession = async (accountEmail, instagramUsername) => {
   return new Promise(async (resolve, reject) => {
     const { instagramAccounts } = await User.findOne({ email: accountEmail });
 
-    instagramAccounts.forEach(async element => {
-      if (element.username === instagramUsername) {
+    instagramAccounts.forEach(async ({ username, session }) => {
+      if (username === instagramUsername) {
         const {
           cookies,
           state,
-        } = JSON.parse(Buffer.from(element.session, 'base64').toString('ascii'));
+        } = JSON.parse(Buffer.from(session, 'base64').toString('ascii'));
 
         try {
           await ig.state.deserializeCookieJar(cookies);
