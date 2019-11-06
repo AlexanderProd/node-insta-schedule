@@ -107,11 +107,15 @@ Expects the data in the request body.
 |--------------|----------|----------------------------|
 | accountEmail | true | Email of frontend account. |
 
+## Database Model
+ToDo
+
 ## Getting started
 1. Edit the config file to provide your MongoDB and Email credentials. The whitelist array is used for CORS to only allow incoming requests from certain IP addresses. 
 2. `$ yarn install`
 3. `yarn dev`
 
 ## 📌 ToDo
-- Add challenge handling to register route.
-- Support accounts with 2FA enabled.
+- [] Add challenge handling to register route.
+- [] Support accounts with 2FA enabled.
+- [] Add DB model to readme.
