@@ -49,6 +49,7 @@ This endpoint expects form data encoding with the image file attached.
 
 ### POST `/list/posts`
 This endpoint expects the data in the request body.
+
 | field | required | description |
 |--------------|----------|----------------------------------------------------------------------------------------------------------------------------------------|
 | accountEmail | false | Can be used to filter the results by email.<br>(e.g. only posts by this account.)<br>If not present, all scheduled posts are returned. |
@@ -56,6 +57,7 @@ This endpoint expects the data in the request body.
 ### POST `/remove`
 Used to delete a scheduled posts.
 This endpoint expects the data in the request body.
+
 | field | required | description |
 |-------|----------|-------------------------------------------------------|
 | id | true | Delete post with the corresponding MongoDB object ID. |
@@ -63,6 +65,7 @@ This endpoint expects the data in the request body.
 ### PSOT `/authenticate`
 Used to login into the frontend dashboard.
 Expects the data in the request body.
+
 | field | required | description |
 |--------------|----------|-------------------------------|
 | email | true | Account email to login. |
@@ -72,6 +75,7 @@ Expects the data in the request body.
 ### POST `/register`
 Used to register a new user for the frontend dashboard.
 Expects the data in the request body.
+
 | field | required | description |
 |----------|----------|-------------------|
 | email | true | Account email. |
@@ -84,6 +88,7 @@ Expects JWT either in body, query, header or as attached cookie.
 ### POST `/add-instagram`
 Used to add a new instagram account to a user. This creates a session and saves it to the DB.
 Expects the data in the request body.
+
 | field | required | description |
 |--------------|----------|-----------------------------------------------------|
 | accountEmail | true | Email for frontend account which owns this account. |
@@ -96,6 +101,7 @@ Expects the data in the request body.
 ### POST `/list/instagram-accounts`
 Returns the Instagram accounts a frontend user has connected.
 Expects the data in the request body.
+
 | field | required | description |
 |--------------|----------|----------------------------|
 | accountEmail | true | Email of frontend account. |
