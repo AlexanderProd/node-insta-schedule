@@ -116,6 +116,6 @@ ToDo
 3. `yarn dev`
 
 ## 📌 ToDo
-- [] Add challenge handling to register route.
-- [] Support accounts with 2FA enabled.
-- [] Add DB model to readme.
+- [ ] Add challenge handling to register route.
+- [ ] Support accounts with 2FA enabled.
+- [ ] Add DB model to readme.
