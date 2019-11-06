@@ -15,14 +15,4 @@ module.exports = {
       SECRET: '',
     },
   }],
-  deploy: {
-    production : {
-      key: '~/.ssh/ubuntu-ec2.pem',
-      user: 'ubuntu',
-      host: 'ec2-3-121-177-95.eu-central-1.compute.amazonaws.com',
-      ref: 'git@github.com:AlexanderProd/insta-schedule.git',
-      repo: 'git@github.com:AlexanderProd/insta-schedule.git/master',
-      path: '/home/ubuntu/test',
-    }
-  }
 };
