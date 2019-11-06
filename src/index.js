@@ -12,7 +12,6 @@ const jwt = require('jsonwebtoken');
 const { promisify } = require('util');
 const inquirer = require('inquirer');
 
-
 const sendMail = require('./sendMail');
 const withAuth = require('./withAuth');
 const User = require('./models/User');
@@ -57,6 +56,7 @@ const scheduler = new msm(connection, driverOptions);
 const readFilePromise = promisify(readFile);
 
 let db = null;
+let securityCode = null;
 
 
 function isProd() {
@@ -107,6 +107,18 @@ const postImage = async data => {
 }
 
 const createInstaSession = (username, password) => {
+  const setSecurityCode = async tries => {
+    if (tries > 30) {
+      return new Error('No security code provided after 5 minutes.');
+    }
+    if (securityCode === null) {
+      setTimeout(() => {
+        setSecurityCode(tries + 1);
+      }, 10 * 1000);
+    }
+    await ig.challenge.sendSecurityCode(securityCode);
+  }
+
   return new Promise(async (resolve, reject) => {
     ig.state.generateDevice(username);
     await ig.simulate.preLoginFlow();
@@ -123,7 +135,7 @@ const createInstaSession = (username, password) => {
           message: 'Enter code',
         }]);
         try {
-          await ig.challenge.sendSecurityCode(code);
+          setSecurityCode(0)
         } catch (error) {
           console.error(error);
           reject(error);
@@ -189,7 +201,7 @@ const restoreSession = async (accountEmail, instagramUsername) => {
   app.use(bodyParser.json());
   app.use(cookieParser());
 
-  app.post('/', (req, res) => {
+  app.post('/schedule', (req, res) => {
     const form = new IncomingForm();
     let data = {};
     
@@ -353,11 +365,11 @@ const restoreSession = async (accountEmail, instagramUsername) => {
     });
   });
 
-  app.post('/checkToken', withAuth, (req, res) => {
+  app.post('/check-token', withAuth, (req, res) => {
     res.status(200).send(req.email);
   });
 
-  app.post('/addInstagram', async (req, res) => {
+  app.post('/add-instagram', async (req, res) => {
     const {
       accountEmail,
       username,
@@ -383,7 +395,16 @@ const restoreSession = async (accountEmail, instagramUsername) => {
     }
   });
 
-  app.post('/list/instagramAccounts', async (req, res) => {
+  app.post('/resolve-challenge', (req, res) => {
+    const { code } = req.body; 
+    if (code === undefined) {
+      res.status(404).send('No code provided!');
+    }
+    securityCode = code; 
+    res.sendStatus(200);
+  });
+
+  app.post('/list/instagram-accounts', async (req, res) => {
     const { accountEmail } = req.body;
     if (accountEmail === undefined) {
       return res.status(404).json({ error: 'No account email provided' });
