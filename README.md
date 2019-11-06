@@ -63,7 +63,7 @@ This endpoint expects the data in the request body.
 |-------|----------|-------------------------------------------------------|
 | id | true | Delete post with the corresponding MongoDB object ID. |
 
-### PSOT `/authenticate`
+### POST `/authenticate`
 Used to login into the frontend dashboard.
 Expects the data in the request body.
 
