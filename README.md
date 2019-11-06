@@ -39,6 +39,7 @@ Logic and REST routes for authentication based on [json web token[(https://de.wi
 
 ### POST `/schedule`
 This endpoint expects form data encoding with the image file attached. 
+
 | field | required | description |
 |-------------------|----------|------------------------------------------------------------|
 | instagramUsername | true | The Instagram username to which the photo shall be posted. |
