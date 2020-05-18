@@ -33,7 +33,7 @@ You can add multiple users, every user will have its own Instagram account(s). U
 You can delete scheduled posts before they're posted.
 
 ### 🔑 Logic for frontend user authentication.
-Logic and REST routes for authentication based on [json web token[(https://de.wikipedia.org/wiki/JSON_Web_Token)] and MongoDB.
+Logic and REST routes for authentication based on [json web token](https://de.wikipedia.org/wiki/JSON_Web_Token) and MongoDB.
 
 ## REST Endpoints
 
