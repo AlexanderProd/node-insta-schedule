@@ -4,6 +4,7 @@ const cors = require('cors');
 const express = require('express');
 const { IncomingForm } = require('formidable');
 const { readFile, rename, unlinkSync } = require('fs');
+const Instagram = require('instagram-web-api');
 const { IgApiClient, IgCheckpointError } = require('instagram-private-api');
 const { MongoClient, ObjectId } = require('mongodb');
 const mongoose = require('mongoose');
@@ -15,7 +16,7 @@ const inquirer = require('inquirer');
 const sendMail = require('./sendMail');
 const withAuth = require('./withAuth');
 const User = require('./models/User');
-const config = require('../config.json')
+const config = require('../config.json');
 
 const ig = new IgApiClient();
 const app = express();
@@ -27,7 +28,7 @@ const corsOptions = {
   origin: (origin, callback) => {
     if (config.whitelist.indexOf(origin) !== -1) {
       callback(null, true);
-    // allow Postman requests for development
+      // allow Postman requests for development
     } else if (origin === undefined && !isProd()) {
       callback(null, true);
     } else {
@@ -38,18 +39,16 @@ const corsOptions = {
   optionsSuccessStatus: 200,
 };
 
-const connection = isProd()
-  ? config.mongoDB.urlProd
-  : config.mongoDB.urlDev;
+const connection = isProd() ? config.mongoDB.urlProd : config.mongoDB.urlDev;
 
 const driverOptions = isProd()
   ? {
-    useNewUrlParser: true,
-    auth: {
-      user: config.mongo.user,
-      password: config.mongo.password
+      useNewUrlParser: true,
+      auth: {
+        user: config.mongo.user,
+        password: config.mongo.password,
+      },
     }
-  }
   : { useNewUrlParser: true };
 
 const scheduler = new msm(connection, driverOptions);
@@ -57,7 +56,6 @@ const readFilePromise = promisify(readFile);
 
 let db = null;
 let securityCode = null;
-
 
 function isProd() {
   if (process.env.NODE_ENV === 'production') {
@@ -74,37 +72,32 @@ const connectMongoClient = () => {
       resolve();
     });
   });
-}
+};
 
 const mongooseConnect = () => {
   return new Promise((resolve, reject) => {
-    mongoose.connect(connection, driverOptions, (err) => {
+    mongoose.connect(connection, driverOptions, err => {
       if (err) reject(err);
       resolve();
     });
   });
-}
+};
 
 const postImage = async data => {
-  const {
-    accountEmail,
-    instagramUsername,
-    imageUrl,
-    caption
-  } = data;
-  
+  const { accountEmail, instagramUsername, imageUrl, caption } = data;
+
   try {
     await restoreSession(accountEmail, instagramUsername);
     await ig.publish.photo({
       file: await readFilePromise(imageUrl),
-      'caption': caption,
+      caption: caption,
     });
     unlinkSync(imageUrl);
   } catch (error) {
     await sendMail(error, data);
     unlinkSync(imageUrl);
   }
-}
+};
 
 const createInstaSession = (username, password) => {
   const setSecurityCode = async tries => {
@@ -117,7 +110,7 @@ const createInstaSession = (username, password) => {
       }, 10 * 1000);
     }
     await ig.challenge.sendSecurityCode(securityCode);
-  }
+  };
 
   return new Promise(async (resolve, reject) => {
     ig.state.generateDevice(username);
@@ -129,13 +122,15 @@ const createInstaSession = (username, password) => {
       if (error instanceof IgCheckpointError) {
         await ig.challenge.auto(true);
         console.log(ig.state.checkpoint);
-        const { code } = await inquirer.prompt([{
-          type: 'input',
-          name: 'code',
-          message: 'Enter code',
-        }]);
+        const { code } = await inquirer.prompt([
+          {
+            type: 'input',
+            name: 'code',
+            message: 'Enter code',
+          },
+        ]);
         try {
-          setSecurityCode(0)
+          setSecurityCode(0);
         } catch (error) {
           console.error(error);
           reject(error);
@@ -154,15 +149,17 @@ const createInstaSession = (username, password) => {
       phoneId: ig.state.phoneId,
       adid: ig.state.adid,
       build: ig.state.build,
-    }
+    };
     const session = {
-      'cookies': cookies,
-      'state': state,
-    }
-    const base64Session = Buffer.from(JSON.stringify(session)).toString('base64');
+      cookies: cookies,
+      state: state,
+    };
+    const base64Session = Buffer.from(JSON.stringify(session)).toString(
+      'base64'
+    );
     resolve(base64Session);
   });
-}
+};
 
 const restoreSession = async (accountEmail, instagramUsername) => {
   return new Promise(async (resolve, reject) => {
@@ -170,10 +167,9 @@ const restoreSession = async (accountEmail, instagramUsername) => {
 
     instagramAccounts.forEach(async ({ username, session }) => {
       if (username === instagramUsername) {
-        const {
-          cookies,
-          state,
-        } = JSON.parse(Buffer.from(session, 'base64').toString('ascii'));
+        const { cookies, state } = JSON.parse(
+          Buffer.from(session, 'base64').toString('ascii')
+        );
 
         try {
           await ig.state.deserializeCookieJar(cookies);
@@ -190,7 +186,7 @@ const restoreSession = async (accountEmail, instagramUsername) => {
       }
     });
   });
-}
+};
 
 (async function main() {
   await connectMongoClient();
@@ -204,21 +200,22 @@ const restoreSession = async (accountEmail, instagramUsername) => {
   app.post('/schedule', (req, res) => {
     const form = new IncomingForm();
     let data = {};
-    
+
     // adds or subtracts 0-59 seconds
     const randomizeUploadDate = date => {
-      const timeOffeset = Math.floor(Math.random() * 59000) + 1
-      if (Math.random() >= 0.5){
-        return date + timeOffeset
+      const timeOffeset = Math.floor(Math.random() * 59000) + 1;
+      if (Math.random() >= 0.5) {
+        return date + timeOffeset;
       } else {
-        return date - timeOffeset
+        return date - timeOffeset;
       }
-    }
+    };
 
-    const generateFileName = () => (
-      String(Math.random().toString(36).substring(2, 15) 
-      + Math.random().toString(36).substring(2, 15))
-    )
+    const generateFileName = () =>
+      String(
+        Math.random().toString(36).substring(2, 15) +
+          Math.random().toString(36).substring(2, 15)
+      );
 
     form.parse(req);
 
@@ -226,14 +223,14 @@ const restoreSession = async (accountEmail, instagramUsername) => {
       const fileName = `${generateFileName()}.jpg`;
       const imageUrl = `${__dirname}/../uploads/${fileName}`;
 
-      rename(file.path, imageUrl, (err) => {
+      rename(file.path, imageUrl, err => {
         if (err) return res.sendStatus(500);
       });
 
       data = {
         ...data,
-        'imageUrl': imageUrl,
-        'fileName': fileName,
+        imageUrl: imageUrl,
+        fileName: fileName,
       };
     });
 
@@ -248,9 +245,7 @@ const restoreSession = async (accountEmail, instagramUsername) => {
       const event = {
         name: 'instagram-post',
         id: String(Date.now()),
-        after: new Date(
-          randomizeUploadDate(Number(data.uploadDate))
-        ),
+        after: new Date(randomizeUploadDate(Number(data.uploadDate))),
         data: data,
       };
 
@@ -261,9 +256,7 @@ const restoreSession = async (accountEmail, instagramUsername) => {
 
   app.post('/list/posts', (req, res) => {
     const { accountEmail } = req.body;
-    const filter = accountEmail
-      ? { 'data.accountEmail': accountEmail }
-      : {};
+    const filter = accountEmail ? { 'data.accountEmail': accountEmail } : {};
 
     scheduler.list({ bySchedule: true, query: filter }, (err, events) => {
       if (err) {
@@ -294,7 +287,7 @@ const restoreSession = async (accountEmail, instagramUsername) => {
     if (id) {
       const params = {
         name: 'instagram-post',
-        id: id
+        id: id,
       };
       const filePath = await getFilePath(id);
 
@@ -317,33 +310,27 @@ const restoreSession = async (accountEmail, instagramUsername) => {
     User.findOne({ email }, (err, user) => {
       if (err) {
         console.error(err);
-        res.status(500)
-          .json({
-            error: 'Internal error please try again'
-          });
+        res.status(500).json({
+          error: 'Internal error please try again',
+        });
       } else if (!user) {
-        res.status(401)
-          .json({
-            error: 'Incorrect email or password'
-          });
+        res.status(401).json({
+          error: 'Incorrect email or password',
+        });
       } else {
         user.isCorrectPassword(password, (err, same) => {
           if (err) {
-            res.status(500)
-              .json({
-                error: 'Internal error please try again'
-              });
+            res.status(500).json({
+              error: 'Internal error please try again',
+            });
           } else if (!same) {
-            res.status(401)
-              .json({
-                error: 'Incorrect email or password'
-              });
+            res.status(401).json({
+              error: 'Incorrect email or password',
+            });
           } else {
             // Issue token
             const payload = { email };
-            const options = stayLoggedIn 
-              ? {} 
-              : { expiresIn: '1h' };
+            const options = stayLoggedIn ? {} : { expiresIn: '1h' };
             const token = jwt.sign(payload, SECRET, options);
             res.cookie('token', token, { httpOnly: false }).sendStatus(200);
           }
@@ -355,12 +342,12 @@ const restoreSession = async (accountEmail, instagramUsername) => {
   app.post('/register', (req, res) => {
     const { email, password } = req.body;
     const user = new User({ email, password });
-    user.save((err) => {
+    user.save(err => {
       if (err) {
         console.log(err);
-        res.status(500).send("Error registering new user please try again.");
+        res.status(500).send('Error registering new user please try again.');
       } else {
-        res.status(200).send("Welcome to the club!");
+        res.status(200).send('Welcome to the club!');
       }
     });
   });
@@ -370,23 +357,19 @@ const restoreSession = async (accountEmail, instagramUsername) => {
   });
 
   app.post('/add-instagram', async (req, res) => {
-    const {
-      accountEmail,
-      username,
-      password,
-    } = req.body;
-    
+    const { accountEmail, username, password } = req.body;
+
     try {
       const session = await createInstaSession(username, password);
       const query = await User.updateOne(
         { email: accountEmail },
         {
-          '$push': {
+          $push: {
             instagramAccounts: {
               username: username,
               session: session,
-            }
-          }
+            },
+          },
         }
       );
       res.status(200).send(query);
@@ -396,11 +379,11 @@ const restoreSession = async (accountEmail, instagramUsername) => {
   });
 
   app.post('/resolve-challenge', (req, res) => {
-    const { code } = req.body; 
+    const { code } = req.body;
     if (code === undefined) {
       res.status(404).send('No code provided!');
     }
-    securityCode = code; 
+    securityCode = code;
     res.sendStatus(200);
   });
 
@@ -412,9 +395,9 @@ const restoreSession = async (accountEmail, instagramUsername) => {
     try {
       const query = await User.find({ email: accountEmail });
       const { instagramAccounts } = query[0];
-      const usernames = []; 
+      const usernames = [];
 
-      instagramAccounts.forEach((elem) => {
+      instagramAccounts.forEach(elem => {
         usernames.push(elem.username);
       });
       res.status(200).send(usernames);
@@ -427,7 +410,9 @@ const restoreSession = async (accountEmail, instagramUsername) => {
 
   app.listen(PORT, () => {
     console.log(
-      `App listening on port ${PORT} runnung in ${process.env.NODE_ENV ? process.env.NODE_ENV : 'dev'}!`
+      `App listening on port ${PORT} runnung in ${
+        process.env.NODE_ENV ? process.env.NODE_ENV : 'dev'
+      }!`
     );
   });
 
