@@ -91,7 +91,6 @@ const findPassword = (accountEmail, username) => {
       const { password } = result.instagramAccounts.find(
         account => account.username === username
       );
-      console.log(password);
       resolve(password);
     } catch (error) {
       reject(error);
@@ -101,7 +100,6 @@ const findPassword = (accountEmail, username) => {
 
 const postImage = async data => {
   const { accountEmail, instagramUsername, imageUrl, caption } = data;
-  console.log(instagramUsername);
   try {
     const password = await findPassword(accountEmail, instagramUsername);
     const cookieStore = new FileCookieStore(
