@@ -5,20 +5,18 @@ const express = require('express');
 const { IncomingForm } = require('formidable');
 const { readFile, rename, unlinkSync } = require('fs');
 const Instagram = require('instagram-web-api');
-const { IgApiClient, IgCheckpointError } = require('instagram-private-api');
+const jwt = require('jsonwebtoken');
 const { MongoClient, ObjectId } = require('mongodb');
 const mongoose = require('mongoose');
 const msm = require('mongo-scheduler-more');
-const jwt = require('jsonwebtoken');
+const FileCookieStore = require('tough-cookie-filestore2');
 const { promisify } = require('util');
-const inquirer = require('inquirer');
 
 const sendMail = require('./sendMail');
 const withAuth = require('./withAuth');
 const User = require('./models/User');
 const config = require('../config.json');
 
-const ig = new IgApiClient();
 const app = express();
 
 const PORT = process.env.PORT || 3000;
@@ -29,7 +27,9 @@ const corsOptions = {
     if (config.whitelist.indexOf(origin) !== -1) {
       callback(null, true);
       // allow Postman requests for development
-    } else if (origin === undefined && !isProd()) {
+    } else if (origin === undefined) {
+      callback(null, true);
+    } else if (!isProd()) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
@@ -45,8 +45,8 @@ const driverOptions = isProd()
   ? {
       useNewUrlParser: true,
       auth: {
-        user: config.mongo.user,
-        password: config.mongo.password,
+        user: config.mongoDB.user,
+        password: config.mongoDB.password,
       },
     }
   : { useNewUrlParser: true };
@@ -83,109 +83,49 @@ const mongooseConnect = () => {
   });
 };
 
+const findPassword = (accountEmail, username) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const users = db.collection('users');
+      const result = await users.findOne({ email: accountEmail });
+      const { password } = result.instagramAccounts.find(
+        account => account.username === username
+      );
+      console.log(password);
+      resolve(password);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
 const postImage = async data => {
   const { accountEmail, instagramUsername, imageUrl, caption } = data;
-
+  console.log(instagramUsername);
   try {
-    await restoreSession(accountEmail, instagramUsername);
-    await ig.publish.photo({
-      file: await readFilePromise(imageUrl),
-      caption: caption,
+    const password = await findPassword(accountEmail, instagramUsername);
+    const cookieStore = new FileCookieStore(
+      __dirname + `/../cookies/${instagramUsername}.json`
+    );
+    const session = new Instagram({
+      username: instagramUsername,
+      password: password,
+      cookieStore,
     });
+    await session.login();
+
+    await session.uploadPhoto({
+      photo: imageUrl,
+      caption: caption,
+      post: 'feed',
+    });
+
     unlinkSync(imageUrl);
   } catch (error) {
+    console.error(error);
     await sendMail(error, data);
     unlinkSync(imageUrl);
   }
-};
-
-const createInstaSession = (username, password) => {
-  const setSecurityCode = async tries => {
-    if (tries > 30) {
-      return new Error('No security code provided after 5 minutes.');
-    }
-    if (securityCode === null) {
-      setTimeout(() => {
-        setSecurityCode(tries + 1);
-      }, 10 * 1000);
-    }
-    await ig.challenge.sendSecurityCode(securityCode);
-  };
-
-  return new Promise(async (resolve, reject) => {
-    ig.state.generateDevice(username);
-    await ig.simulate.preLoginFlow();
-
-    try {
-      await ig.account.login(username, password);
-    } catch (error) {
-      if (error instanceof IgCheckpointError) {
-        await ig.challenge.auto(true);
-        console.log(ig.state.checkpoint);
-        const { code } = await inquirer.prompt([
-          {
-            type: 'input',
-            name: 'code',
-            message: 'Enter code',
-          },
-        ]);
-        try {
-          setSecurityCode(0);
-        } catch (error) {
-          console.error(error);
-          reject(error);
-        }
-      } else {
-        console.error(error);
-        reject(error);
-      }
-    }
-
-    const cookies = await ig.state.serializeCookieJar();
-    const state = {
-      deviceString: ig.state.deviceString,
-      deviceId: ig.state.deviceId,
-      uuid: ig.state.uuid,
-      phoneId: ig.state.phoneId,
-      adid: ig.state.adid,
-      build: ig.state.build,
-    };
-    const session = {
-      cookies: cookies,
-      state: state,
-    };
-    const base64Session = Buffer.from(JSON.stringify(session)).toString(
-      'base64'
-    );
-    resolve(base64Session);
-  });
-};
-
-const restoreSession = async (accountEmail, instagramUsername) => {
-  return new Promise(async (resolve, reject) => {
-    const { instagramAccounts } = await User.findOne({ email: accountEmail });
-
-    instagramAccounts.forEach(async ({ username, session }) => {
-      if (username === instagramUsername) {
-        const { cookies, state } = JSON.parse(
-          Buffer.from(session, 'base64').toString('ascii')
-        );
-
-        try {
-          await ig.state.deserializeCookieJar(cookies);
-          ig.state.deviceString = state.deviceString;
-          ig.state.deviceId = state.deviceId;
-          ig.state.uuid = state.uuid;
-          ig.state.phoneId = state.phoneId;
-          ig.state.adid = state.adid;
-          ig.state.build = state.build;
-          resolve();
-        } catch (error) {
-          reject(error);
-        }
-      }
-    });
-  });
 };
 
 (async function main() {
@@ -290,7 +230,6 @@ const restoreSession = async (accountEmail, instagramUsername) => {
         id: id,
       };
       const filePath = await getFilePath(id);
-
       scheduler.remove(params, (err, event) => {
         if (err) {
           console.error(err);
@@ -360,20 +299,27 @@ const restoreSession = async (accountEmail, instagramUsername) => {
     const { accountEmail, username, password } = req.body;
 
     try {
-      const session = await createInstaSession(username, password);
+      const cookieStore = new FileCookieStore(
+        __dirname + `/../cookies/${username}.json`
+      );
+      const session = new Instagram({ username, password, cookieStore });
+      await session.login();
+
       const query = await User.updateOne(
         { email: accountEmail },
         {
           $push: {
             instagramAccounts: {
               username: username,
-              session: session,
+              password: password,
+              //session: session,
             },
           },
         }
       );
       res.status(200).send(query);
     } catch (error) {
+      console.error(error);
       res.status(500).send(error);
     }
   });

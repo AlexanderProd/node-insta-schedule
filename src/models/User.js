@@ -9,12 +9,13 @@ const UserSchema = new mongoose.Schema({
   instagramAccounts: [
     {
       username: String,
-      session: String
-    }
+      session: String,
+      password: String,
+    },
   ],
 });
 
-UserSchema.pre('save', function(next) {
+UserSchema.pre('save', function (next) {
   if (this.isNew || this.isModified('password')) {
     const document = this;
     bcrypt.hash(this.password, saltRounds, (err, hashedPassword) => {
@@ -30,7 +31,7 @@ UserSchema.pre('save', function(next) {
   }
 });
 
-UserSchema.methods.isCorrectPassword = function(password, callback) {
+UserSchema.methods.isCorrectPassword = function (password, callback) {
   bcrypt.compare(password, this.password, (err, same) => {
     if (err) {
       callback(err);
@@ -38,6 +39,6 @@ UserSchema.methods.isCorrectPassword = function(password, callback) {
       callback(err, same);
     }
   });
-}
+};
 
 module.exports = mongoose.model('User', UserSchema);
