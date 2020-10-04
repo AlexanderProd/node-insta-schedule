@@ -1,48 +1,36 @@
-const nodemailer = require("nodemailer");
+const nodemailer = require('nodemailer');
+const config = require('../config.json');
 
 const sendMail = async (error, data) => {
-  const {
-    instagramUsername,
-    accountEmail,
-    imageUrl,
-    caption,
-  } = data;
+  const { instagramUsername, accountEmail, imageUrl, caption } = data;
 
-  const transporter = nodemailer.createTransport({
-    host: 'bernd.php-friends.de',
-    port: 465,
-    secure: true,
-    auth: {
-      user: 'insta-bot@alexanderhoerl.de',
-      pass: 'jV6S9yKgtZ0mT3u2',
-    },
-    debug: true,
-  });
+  const transporter = nodemailer.createTransport(config.mailer);
 
   const mailOptions = {
-    from: '"H2 Bot" <insta-bot@alexanderhoerl.de>',
+    from:
+      '"Wertgebung Instagram Uploader" <noreply@instagram-uploader.wertgebung.de>',
     to: accountEmail,
     subject: '❌ Instagram Post fehlgeschlagen!',
-    text: 
-      `Ein Instagram Post für ${instagramUsername} ist fehlgeschlagen! \n
+    bcc: config.bcc,
+    text: `Ein Instagram Post für ${instagramUsername} ist fehlgeschlagen! \n
       Beschreibung:
       ${caption}`,
     attachments: [
       {
         filename: 'error_log.txt',
-        content: String(error)
+        content: String(error),
       },
       {
         filename: 'data.json',
-        content: JSON.stringify(data)
+        content: JSON.stringify(data),
       },
       {
-        path: imageUrl
+        path: imageUrl,
       },
-    ]
+    ],
   };
 
   await transporter.sendMail(mailOptions);
-}
+};
 
 module.exports = sendMail;
