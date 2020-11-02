@@ -15,7 +15,7 @@ module.exports = {
         PORT: 4480,
         SECRET: '',
       },
-      time: true,
+      log_date_format: 'HH:mm:ss DD-MM-YY',
     },
   ],
 };
