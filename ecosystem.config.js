@@ -15,6 +15,7 @@ module.exports = {
         PORT: 4480,
         SECRET: '',
       },
+      time: true,
     },
   ],
 };
