@@ -1482,9 +1482,9 @@ lodash.once@^4.0.0:
   integrity sha1-DdOXEhPHxW34gJd9UEyI+0cal6w=
 
 lodash@^4.17.19:
-  version "4.17.20"
-  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.20.tgz#b44a9b6297bcb698f1c51a3545a2b3b368d59c52"
-  integrity sha512-PlhdFcillOINfeV7Ni6oF1TAEayyZBoZ8bcshTHqOYJYlrqzRK5hagpagky5o4HfCzzd1TRkXPMFq6cKk9rGmA==
+  version "4.17.21"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
+  integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
 
 lowercase-keys@^1.0.0:
   version "1.0.1"
@@ -1627,16 +1627,6 @@ moment-timezone@^0.5.31:
   version "2.29.0"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.0.tgz#fcbef955844d91deb55438613ddcec56e86a3425"
   integrity sha512-z6IJ5HXYiuxvFTI6eiQ9dm77uE0gyy1yXNApVHqTcnIKfY9tIwEjlzsZ6u1LQXvVgKeTnv9Xm7NDvJ7lso3MtA==
-
-mongo-scheduler-more@^2.2.2:
-  version "2.2.2"
-  resolved "https://registry.yarnpkg.com/mongo-scheduler-more/-/mongo-scheduler-more-2.2.2.tgz#f0cabe88eb1388e0e14642553075d20d17e25084"
-  integrity sha512-m5ji2dRCKKPrSqVWeNU2z+ofV91Lz16/c5UDR256h0buSaTV4SVesbgIvu0wbqhdfVRXauBV3qAprDvthwEl5w==
-  dependencies:
-    check-types "^11.1.1"
-    cron-parser "^2.13.0"
-    moment "^2.24.0"
-    mongodb "^3.4.1"
 
 "mongo-scheduler-more@https://github.com/AlexanderProd/mongo-scheduler.git":
   version "2.2.2"
