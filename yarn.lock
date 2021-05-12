@@ -1628,16 +1628,6 @@ moment-timezone@^0.5.31:
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.0.tgz#fcbef955844d91deb55438613ddcec56e86a3425"
   integrity sha512-z6IJ5HXYiuxvFTI6eiQ9dm77uE0gyy1yXNApVHqTcnIKfY9tIwEjlzsZ6u1LQXvVgKeTnv9Xm7NDvJ7lso3MtA==
 
-mongo-scheduler-more@^2.2.2:
-  version "2.2.2"
-  resolved "https://registry.yarnpkg.com/mongo-scheduler-more/-/mongo-scheduler-more-2.2.2.tgz#f0cabe88eb1388e0e14642553075d20d17e25084"
-  integrity sha512-m5ji2dRCKKPrSqVWeNU2z+ofV91Lz16/c5UDR256h0buSaTV4SVesbgIvu0wbqhdfVRXauBV3qAprDvthwEl5w==
-  dependencies:
-    check-types "^11.1.1"
-    cron-parser "^2.13.0"
-    moment "^2.24.0"
-    mongodb "^3.4.1"
-
 "mongo-scheduler-more@https://github.com/AlexanderProd/mongo-scheduler.git":
   version "2.2.2"
   resolved "https://github.com/AlexanderProd/mongo-scheduler.git#9000c59cb2875feb38ec6c82efe40cd722a39598"
@@ -1770,10 +1760,10 @@ node-pre-gyp@0.15.0:
     semver "^5.3.0"
     tar "^4.4.2"
 
-nodemailer@^5.1.1:
-  version "5.1.1"
-  resolved "https://registry.yarnpkg.com/nodemailer/-/nodemailer-5.1.1.tgz#0c48d1ecab02e86d9ff6c620ee75ed944b763505"
-  integrity sha512-hKGCoeNdFL2W7S76J/Oucbw0/qRlfG815tENdhzcqTpSjKgAN91mFOqU2lQUflRRxFM7iZvCyaFcAR9noc/CqQ==
+nodemailer@^6.4.16:
+  version "6.4.16"
+  resolved "https://registry.yarnpkg.com/nodemailer/-/nodemailer-6.4.16.tgz#5cb6391b1d79ab7eff32d6f9f48366b5a7117293"
+  integrity sha512-68K0LgZ6hmZ7PVmwL78gzNdjpj5viqBdFqKrTtr9bZbJYj6BRj5W6WGkxXrEnUl3Co3CBXi3CZBUlpV/foGnOQ==
 
 nodemon@^1.18.10:
   version "1.19.4"
