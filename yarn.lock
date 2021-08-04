@@ -1628,16 +1628,6 @@ moment-timezone@^0.5.31:
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.0.tgz#fcbef955844d91deb55438613ddcec56e86a3425"
   integrity sha512-z6IJ5HXYiuxvFTI6eiQ9dm77uE0gyy1yXNApVHqTcnIKfY9tIwEjlzsZ6u1LQXvVgKeTnv9Xm7NDvJ7lso3MtA==
 
-mongo-scheduler-more@^2.2.2:
-  version "2.2.2"
-  resolved "https://registry.yarnpkg.com/mongo-scheduler-more/-/mongo-scheduler-more-2.2.2.tgz#f0cabe88eb1388e0e14642553075d20d17e25084"
-  integrity sha512-m5ji2dRCKKPrSqVWeNU2z+ofV91Lz16/c5UDR256h0buSaTV4SVesbgIvu0wbqhdfVRXauBV3qAprDvthwEl5w==
-  dependencies:
-    check-types "^11.1.1"
-    cron-parser "^2.13.0"
-    moment "^2.24.0"
-    mongodb "^3.4.1"
-
 "mongo-scheduler-more@https://github.com/AlexanderProd/mongo-scheduler.git":
   version "2.2.2"
   resolved "https://github.com/AlexanderProd/mongo-scheduler.git#9000c59cb2875feb38ec6c82efe40cd722a39598"
@@ -2504,9 +2494,9 @@ supports-color@^5.3.0, supports-color@^5.5.0:
     has-flag "^3.0.0"
 
 tar@^4.4.2:
-  version "4.4.13"
-  resolved "https://registry.yarnpkg.com/tar/-/tar-4.4.13.tgz#43b364bc52888d555298637b10d60790254ab525"
-  integrity sha512-w2VwSrBoHa5BsSyH+KxEqeQBAllHhccyMFVHtGtdMpF4W7IRWfZjFiQceJPChOeTsSDVUpER2T8FA93pr0L+QA==
+  version "4.4.15"
+  resolved "https://registry.yarnpkg.com/tar/-/tar-4.4.15.tgz#3caced4f39ebd46ddda4d6203d48493a919697f8"
+  integrity sha512-ItbufpujXkry7bHH9NpQyTXPbJ72iTlXgkBAYsAjDXk3Ds8t/3NfO5P4xZGy7u+sYuQUbimgzswX4uQIEeNVOA==
   dependencies:
     chownr "^1.1.1"
     fs-minipass "^1.2.5"
