@@ -1582,9 +1582,9 @@ minimatch@^3.0.4:
     brace-expansion "^1.1.7"
 
 minimist@^1.2.0, minimist@^1.2.5:
-  version "1.2.5"
-  resolved "https://registry.yarnpkg.com/minimist/-/minimist-1.2.5.tgz#67d66014b66a6a8aaa0c083c5fd58df4e4e97602"
-  integrity sha512-FM9nNUYrRBAELZQT3xeZQ7fmMOBg6nWNmJKTcgsJeaLstP/UODVpGsr5OhXhhXg6f+qtJ8uiZ+PUxkDWcgIXLw==
+  version "1.2.6"
+  resolved "https://registry.yarnpkg.com/minimist/-/minimist-1.2.6.tgz#8637a5b759ea0d6e98702cfb3a9283323c93af44"
+  integrity sha512-Jsjnk4bw3YJqYzbdyBiNsPWHPfO++UGG749Cxs6peCu5Xg4nrena6OVxOYxrQTqww0Jmwt+Ref8rggumkTLz9Q==
 
 minipass@^2.6.0, minipass@^2.8.6, minipass@^2.9.0:
   version "2.9.0"
@@ -1627,16 +1627,6 @@ moment-timezone@^0.5.31:
   version "2.29.0"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.0.tgz#fcbef955844d91deb55438613ddcec56e86a3425"
   integrity sha512-z6IJ5HXYiuxvFTI6eiQ9dm77uE0gyy1yXNApVHqTcnIKfY9tIwEjlzsZ6u1LQXvVgKeTnv9Xm7NDvJ7lso3MtA==
-
-mongo-scheduler-more@^2.2.2:
-  version "2.2.2"
-  resolved "https://registry.yarnpkg.com/mongo-scheduler-more/-/mongo-scheduler-more-2.2.2.tgz#f0cabe88eb1388e0e14642553075d20d17e25084"
-  integrity sha512-m5ji2dRCKKPrSqVWeNU2z+ofV91Lz16/c5UDR256h0buSaTV4SVesbgIvu0wbqhdfVRXauBV3qAprDvthwEl5w==
-  dependencies:
-    check-types "^11.1.1"
-    cron-parser "^2.13.0"
-    moment "^2.24.0"
-    mongodb "^3.4.1"
 
 "mongo-scheduler-more@https://github.com/AlexanderProd/mongo-scheduler.git":
   version "2.2.2"
