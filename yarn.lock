@@ -1617,26 +1617,16 @@ mkdirp@^0.5.0, mkdirp@^0.5.3:
     minimist "^1.2.5"
 
 moment-timezone@^0.5.31:
-  version "0.5.31"
-  resolved "https://registry.yarnpkg.com/moment-timezone/-/moment-timezone-0.5.31.tgz#9c40d8c5026f0c7ab46eda3d63e49c155148de05"
-  integrity sha512-+GgHNg8xRhMXfEbv81iDtrVeTcWt0kWmTEY1XQK14dICTXnWJnT0dxdlPspwqF3keKMVPXwayEsk1DI0AA/jdA==
+  version "0.5.37"
+  resolved "https://registry.yarnpkg.com/moment-timezone/-/moment-timezone-0.5.37.tgz#adf97f719c4e458fdb12e2b4e87b8bec9f4eef1e"
+  integrity sha512-uEDzDNFhfaywRl+vwXxffjjq1q0Vzr+fcQpQ1bU0kbzorfS7zVtZnCnGc8mhWmF39d4g4YriF6kwA75mJKE/Zg==
   dependencies:
     moment ">= 2.9.0"
 
 "moment@>= 2.9.0", moment@^2.24.0:
-  version "2.29.0"
-  resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.0.tgz#fcbef955844d91deb55438613ddcec56e86a3425"
-  integrity sha512-z6IJ5HXYiuxvFTI6eiQ9dm77uE0gyy1yXNApVHqTcnIKfY9tIwEjlzsZ6u1LQXvVgKeTnv9Xm7NDvJ7lso3MtA==
-
-mongo-scheduler-more@^2.2.2:
-  version "2.2.2"
-  resolved "https://registry.yarnpkg.com/mongo-scheduler-more/-/mongo-scheduler-more-2.2.2.tgz#f0cabe88eb1388e0e14642553075d20d17e25084"
-  integrity sha512-m5ji2dRCKKPrSqVWeNU2z+ofV91Lz16/c5UDR256h0buSaTV4SVesbgIvu0wbqhdfVRXauBV3qAprDvthwEl5w==
-  dependencies:
-    check-types "^11.1.1"
-    cron-parser "^2.13.0"
-    moment "^2.24.0"
-    mongodb "^3.4.1"
+  version "2.29.4"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.4.tgz#3dbe052889fe7c1b2ed966fcb3a77328964ef108"
+  integrity sha512-5LC9SOxjSc2HF6vO2CyuTDNivEdoz2IvyJJGj6X8DJ0eFyfszE0QiEd+iXmBvUP3WHxSjFH/vIsA0EN00cgr8w==
 
 "mongo-scheduler-more@https://github.com/AlexanderProd/mongo-scheduler.git":
   version "2.2.2"
