@@ -19,7 +19,7 @@
     "express": "^4.16.4",
     "formidable": "^1.2.1",
     "instagram-web-api": "^2.2.2",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "mongo-scheduler-more": "https://github.com/AlexanderProd/mongo-scheduler.git",
     "mongodb": "^3.2.2",
     "mongoose": "^5.7.5",
